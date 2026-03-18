@@ -1,0 +1,23 @@
+{
+  "name": "@motion-games/engine",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@tensorflow-models/hand-pose-detection": "^2.0.1",
+    "@tensorflow/tfjs-backend-webgl": "^4.22.0",
+    "@tensorflow/tfjs-converter": "^4.22.0",
+    "@tensorflow/tfjs-core": "^4.22.0",
+    "howler": "^2.2.4"
+  },
+  "devDependencies": {
+    "@types/howler": "^2.2.12",
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}
