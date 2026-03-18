@@ -5,6 +5,9 @@
     "dev:balloon": "pnpm --filter game-balloon-popper dev",
     "build:balloon": "pnpm --filter game-balloon-popper build",
     "preview:balloon": "pnpm --filter game-balloon-popper preview",
+    "dev:motorbike": "pnpm --filter game-roaring-motorbike dev",
+    "build:motorbike": "pnpm --filter game-roaring-motorbike build",
+    "preview:motorbike": "pnpm --filter game-roaring-motorbike preview",
     "deploy": "bash scripts/deploy.sh"
   },
   "pnpm": {

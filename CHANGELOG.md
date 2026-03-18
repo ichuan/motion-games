@@ -1,6 +1,17 @@
 # Project Changelog
 
 ## [2026-03-18]
+- [x] 咆哮摩托 (Roaring Motorbike) MVP 完成 (games.981234.xyz/roaring-motorbike/)
+  - 伪 3D 俯视公路，竖屏优先
+  - 面部追踪头部倾斜转向（@tensorflow-models/face-landmarks-detection）
+  - 麦克风音量加速（Web Audio AnalyserNode），触摸按钮降级
+  - 障碍物生成（渐进难度）、金币收集
+  - 引擎声合成（OscillatorNode sawtooth，频率随速度变化）
+  - 尘土粒子、屏幕震动、飘字特效
+- [x] motion-engine 扩展
+  - `createFaceDetector()` + `useFaceTracking()` 面部追踪
+  - `MicVolume` + `useMicVolume()` 麦克风音量分析
+  - `TiltSteering` 头部倾斜→转向映射（死区+限幅）
 - [x] 横屏锁定 (PortraitLock) + Fullscreen API + `100dvh` + `viewport-fit=cover`
 - [x] Service Worker 缓存 TF.js 模型文件（cache-first 策略）
 - [x] 游戏大厅 Hub 静态页面 (`apps/hub/index.html`)

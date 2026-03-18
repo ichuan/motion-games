@@ -19,3 +19,8 @@ export interface TrackingResult {
   hand: SmoothedHand | null;
   isTracking: boolean;
 }
+
+export interface FaceTrackingResult {
+  tiltAngle: number | null;
+  isTracking: boolean;
+}

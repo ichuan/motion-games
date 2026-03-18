@@ -6,8 +6,6 @@
 （无）
 
 ## 🟡 Next Up
-- [ ] 咆哮摩托 (Roaring Motorbike) 游戏开发：头部倾斜转向 + 麦克风音量加速
-- [ ] motion-engine 增加 face-landmarks-detection 支持（咆哮摩托前置）
 - [ ] 游标系统从 balloon-popper 抽象到 motion-engine（跨游戏复用）
 - [ ] 魔法物理沙盒 (Magic Physics Sandbox)：Rapier2D 物理 + 手势抛投
 
@@ -16,6 +14,8 @@
 
 ## 📔 Done
 > 最近完成（查看完整历史 → [CHANGELOG.md](CHANGELOG.md)）
+- [x] 咆哮摩托 (Roaring Motorbike) MVP：面部追踪转向 + 麦克风加速 - 2026-03-18
+- [x] motion-engine 扩展：face tracking, mic volume, tilt steering - 2026-03-18
 - [x] 横屏锁定 + 全屏 API + Service Worker 模型缓存 - 2026-03-18
 - [x] 游戏大厅 Hub + 部署流水线 (Vite build + rsync + Caddy) - 2026-03-18
 - [x] Howler.js 音效系统 (pop/bomb/combo/countdown/start/result) - 2026-03-18

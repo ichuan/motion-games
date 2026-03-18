@@ -45,8 +45,48 @@ importers:
         specifier: ^6.2.0
         version: 6.4.1
 
+  apps/game-roaring-motorbike:
+    dependencies:
+      '@motion-games/engine':
+        specifier: workspace:*
+        version: link:../../packages/motion-engine
+      '@pixi/react':
+        specifier: ^8.0.0
+        version: 8.0.5(@types/react@19.2.14)(pixi.js@8.17.1)(react@19.2.4)
+      pixi.js:
+        specifier: ^8.6.0
+        version: 8.17.1
+      react:
+        specifier: ^19.0.0
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.4(react@19.2.4)
+      zustand:
+        specifier: ^5.0.0
+        version: 5.0.12(@types/react@19.2.14)(react@19.2.4)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.0
+        version: 4.7.0(vite@6.4.1)
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+      vite:
+        specifier: ^6.2.0
+        version: 6.4.1
+
   packages/motion-engine:
     dependencies:
+      '@tensorflow-models/face-landmarks-detection':
+        specifier: ^1.0.5
+        version: 1.0.6(@mediapipe/face_mesh@0.4.1633559619)(@tensorflow-models/face-detection@1.0.3(@mediapipe/face_detection@0.4.1646425229)(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)
       '@tensorflow-models/hand-pose-detection':
         specifier: ^2.0.1
         version: 2.0.1(@mediapipe/hands@0.4.1675469240)(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)
@@ -330,6 +370,12 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
+  '@mediapipe/face_detection@0.4.1646425229':
+    resolution: {integrity: sha512-aeCN+fRAojv9ch3NXorP6r5tcGVLR3/gC1HmtqB0WEZBRXrdP6/3W/sGR0dHr1iT6ueiK95G9PVjbzFosf/hrg==}
+
+  '@mediapipe/face_mesh@0.4.1633559619':
+    resolution: {integrity: sha512-Vc8cdjxS5+O2gnjWH9KncYpUCVXT0h714KlWAsyqJvJbIgUJBqpppbIx8yWcAzBDxm/5cYSuBI5p5ySIPxzcEg==}
+
   '@mediapipe/hands@0.4.1675469240':
     resolution: {integrity: sha512-GxoZvL1mmhJxFxjuyj7vnC++JIuInGznHBin5c7ZSq/RbcnGyfEcJrkM/bMu5K1Mz/2Ko+vEX6/+wewmEHPrHg==}
 
@@ -469,6 +515,23 @@ packages:
     resolution: {integrity: sha512-2HRCml6OztYXyJXAvdDXPKcawukWY2GpR5/nxKp4iBgiO3wcoEGkAaqctIbZcNB6KlUQBIqt8VYkNSj2397EfA==}
     cpu: [x64]
     os: [win32]
+
+  '@tensorflow-models/face-detection@1.0.3':
+    resolution: {integrity: sha512-4Ld/vFF8MrdFdrMWhlLKZD4hMW0PNY9OkYeqoCPNZ+LwFyenxAqVaNaWrR8JKp37vw9Nuzp4ILbkal5zPUnA0g==}
+    peerDependencies:
+      '@mediapipe/face_detection': ~0.4.0
+      '@tensorflow/tfjs-backend-webgl': ^4.21.0
+      '@tensorflow/tfjs-converter': ^4.21.0
+      '@tensorflow/tfjs-core': ^4.21.0
+
+  '@tensorflow-models/face-landmarks-detection@1.0.6':
+    resolution: {integrity: sha512-CwcKcTwk/7PZ5f+9POi6dJV1osa6FvpxPduW9zw/6q0AmMhbdexTZ17qzG9SXdPONuakV1fPaiZNkXXXUDajdw==}
+    peerDependencies:
+      '@mediapipe/face_mesh': ~0.4.0
+      '@tensorflow-models/face-detection': ^1.0.3
+      '@tensorflow/tfjs-backend-webgl': ^4.13.0
+      '@tensorflow/tfjs-converter': ^4.13.0
+      '@tensorflow/tfjs-core': ^4.13.0
 
   '@tensorflow-models/hand-pose-detection@2.0.1':
     resolution: {integrity: sha512-zRA+jz2qOq5FMcyqSFxaQyi6T4YNbMbQhd6SQMI791FQ8yYj23kLgYa73g2NssR5AmM/2ATu9Vcjnf7LUrVLOQ==}
@@ -788,6 +851,9 @@ packages:
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
+  tslib@2.4.0:
+    resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
+
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
@@ -1083,6 +1149,10 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  '@mediapipe/face_detection@0.4.1646425229': {}
+
+  '@mediapipe/face_mesh@0.4.1633559619': {}
+
   '@mediapipe/hands@0.4.1675469240': {}
 
   '@pixi/colord@2.9.6': {}
@@ -1172,6 +1242,24 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.59.0':
     optional: true
+
+  '@tensorflow-models/face-detection@1.0.3(@mediapipe/face_detection@0.4.1646425229)(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)':
+    dependencies:
+      '@mediapipe/face_detection': 0.4.1646425229
+      '@tensorflow/tfjs-backend-webgl': 4.22.0(@tensorflow/tfjs-core@4.22.0)
+      '@tensorflow/tfjs-converter': 4.22.0(@tensorflow/tfjs-core@4.22.0)
+      '@tensorflow/tfjs-core': 4.22.0
+      rimraf: 3.0.2
+      tslib: 2.4.0
+
+  '@tensorflow-models/face-landmarks-detection@1.0.6(@mediapipe/face_mesh@0.4.1633559619)(@tensorflow-models/face-detection@1.0.3(@mediapipe/face_detection@0.4.1646425229)(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)':
+    dependencies:
+      '@mediapipe/face_mesh': 0.4.1633559619
+      '@tensorflow-models/face-detection': 1.0.3(@mediapipe/face_detection@0.4.1646425229)(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)
+      '@tensorflow/tfjs-backend-webgl': 4.22.0(@tensorflow/tfjs-core@4.22.0)
+      '@tensorflow/tfjs-converter': 4.22.0(@tensorflow/tfjs-core@4.22.0)
+      '@tensorflow/tfjs-core': 4.22.0
+      rimraf: 3.0.2
 
   '@tensorflow-models/hand-pose-detection@2.0.1(@mediapipe/hands@0.4.1675469240)(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)':
     dependencies:
@@ -1511,6 +1599,8 @@ snapshots:
       picomatch: 4.0.3
 
   tr46@0.0.3: {}
+
+  tslib@2.4.0: {}
 
   tslib@2.8.1: {}
 
