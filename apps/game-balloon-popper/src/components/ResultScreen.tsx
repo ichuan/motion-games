@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { SFX } from '@motion-games/engine';
 import { useGameStore } from '../store/useGameStore';
 
 interface Props {
@@ -11,6 +13,8 @@ export function ResultScreen({ onRestart }: Props) {
   const bestCombo = useGameStore((s) => s.bestCombo);
 
   const emoji = score >= 200 ? '🏆' : score >= 100 ? '🎉' : '👍';
+
+  useEffect(() => { SFX.result(); }, []);
 
   return (
     <div style={{

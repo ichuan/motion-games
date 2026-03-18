@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { Container, Graphics } from 'pixi.js';
-import { useHandTracking, usePinchDetector, type PinchEvent } from '@motion-games/engine';
+import { useHandTracking, usePinchDetector, SFX, unlockAudio, type PinchEvent } from '@motion-games/engine';
 import { StartScreen } from './components/StartScreen';
 import { CountdownOverlay } from './components/CountdownOverlay';
 import { HUD } from './components/HUD';
@@ -186,9 +186,11 @@ function GameScene({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | 
         addScore(score);
         incrementCombo();
         particles.emit(hit.x, hit.y, hit.color, 10);
+        SFX.pop();
         const comboNow = combo + 1;
         if (comboNow >= COMBO_THRESHOLD) {
           floatingTexts.add(`x${comboNow} +${score}`, hit.x, hit.y - 30, '#FFD54F');
+          SFX.combo();
         } else {
           floatingTexts.add(`+${score}`, hit.x, hit.y - 20);
         }
@@ -198,6 +200,7 @@ function GameScene({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | 
         particles.emit(hit.x, hit.y, 0xFF4444, 15);
         screenShake.trigger(12, 0.2);
         floatingTexts.add(`${SCORE_BOMB}`, hit.x, hit.y - 20, '#FF4444');
+        SFX.bomb();
       }
     }
   }, [app, videoRef, addScore, incrementCombo, resetCombo, particles, floatingTexts, screenShake]);
@@ -361,6 +364,8 @@ export function App() {
   }, []);
 
   const handleStart = useCallback(() => {
+    unlockAudio();
+    SFX.start();
     setState('countdown');
   }, [setState]);
 

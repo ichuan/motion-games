@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SFX } from '@motion-games/engine';
 import { COUNTDOWN_SECONDS } from '../game/constants';
 
 interface Props {
@@ -13,6 +14,7 @@ export function CountdownOverlay({ onComplete }: Props) {
       onComplete();
       return;
     }
+    SFX.countdown();
     const timer = setTimeout(() => setCount(count - 1), 1000);
     return () => clearTimeout(timer);
   }, [count, onComplete]);

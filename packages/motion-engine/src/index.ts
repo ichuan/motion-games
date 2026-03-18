@@ -11,6 +11,9 @@ export { EMAFilter } from './filter/ema';
 export { PinchDetector } from './input/pinch-detector';
 export type { PinchState, PinchEvent, PinchEventType } from './input/types';
 
+// Audio
+export { SFX, unlockAudio } from './audio/synth-sfx';
+
 // Hooks
 export { useCamera } from './hooks/useCamera';
 export { useHandTracking } from './hooks/useHandTracking';
