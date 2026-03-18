@@ -22,6 +22,8 @@ export function ResultScreen({ onRestart }: Props) {
       alignItems: 'center', justifyContent: 'center',
       background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
       zIndex: 200, color: '#fff',
+      padding: 'env(safe-area-inset-top, 12px) 20px env(safe-area-inset-bottom, 12px)',
+      overflowY: 'auto',
     }}>
       <div style={{ fontSize: 64, marginBottom: 8 }}>{emoji}</div>
       <h2 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 24px' }}>
@@ -52,6 +54,15 @@ export function ResultScreen({ onRestart }: Props) {
       >
         再来一局
       </button>
+      <a
+        href="/"
+        style={{
+          marginTop: 16, color: 'rgba(255,255,255,0.6)',
+          fontSize: 16, textDecoration: 'none',
+        }}
+      >
+        返回大厅
+      </a>
     </div>
   );
 }

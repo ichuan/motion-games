@@ -8,6 +8,10 @@ export class EMAFilter {
   constructor(private alpha = 0.4) {}
 
   update(x: number, y: number): Point2D {
+    // Guard: if input is NaN/undefined, return previous value
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      return { x: this.sx, y: this.sy };
+    }
     if (!this.initialized) {
       this.sx = x;
       this.sy = y;

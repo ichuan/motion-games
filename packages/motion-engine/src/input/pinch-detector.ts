@@ -1,8 +1,8 @@
 import type { Point2D } from '../tracking/types';
 import type { PinchEvent, PinchState } from './types';
 
-const DEFAULT_GRAB_THRESHOLD = 0.04;
-const DEFAULT_RELEASE_THRESHOLD = 0.07;
+const DEFAULT_GRAB_THRESHOLD = 0.07;
+const DEFAULT_RELEASE_THRESHOLD = 0.09;
 
 export class PinchDetector {
   private _isPinching = false;
