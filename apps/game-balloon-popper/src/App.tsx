@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { Container, Graphics } from 'pixi.js';
-import { useHandTracking, usePinchDetector, SFX, unlockAudio, type PinchEvent } from '@motion-games/engine';
+import { useCursor, CursorOverlay, SFX, unlockAudio, type CursorState } from '@motion-games/engine';
 import { StartScreen } from './components/StartScreen';
 import { CountdownOverlay } from './components/CountdownOverlay';
 import { HUD } from './components/HUD';
@@ -105,23 +105,11 @@ function BalloonRenderer({ balloons }: { balloons: React.RefObject<BalloonState[
   return <pixiGraphics ref={gRef} draw={NOOP_DRAW} />;
 }
 
-// ── Cursor state shared between GameScene and App ──
-interface CursorState {
-  x: number;
-  y: number;
-  isPinching: boolean;
-  visible: boolean;
-}
-
 // ── Game scene (runs inside PixiJS Application) ──
 function GameScene({
-  videoRef,
   cursorRef,
-  onTrackingStatus,
 }: {
-  videoRef: React.RefObject<HTMLVideoElement | null>;
-  cursorRef: React.MutableRefObject<CursorState>;
-  onTrackingStatus?: (status: { detectorReady: boolean; hasHand: boolean; error: string | null }) => void;
+  cursorRef: React.RefObject<CursorState>;
 }) {
   const { app } = useApplication();
   const balloonsRef = useRef<BalloonState[]>([]);
@@ -140,41 +128,8 @@ function GameScene({
   const setTimeLeft = useGameStore((s) => s.setTimeLeft);
   const setState = useGameStore((s) => s.setState);
 
-  // Always enabled — model starts loading immediately, not after countdown
-  const { hand, detectorReady, error } = useHandTracking(videoRef, true);
-
-  // Report tracking status to parent
-  useEffect(() => {
-    onTrackingStatus?.({ detectorReady, hasHand: !!hand, error });
-  }, [detectorReady, !!hand, error, onTrackingStatus]);
-
-  const pinchState = usePinchDetector(
-    hand,
-    videoRef.current?.videoWidth || 640,
-  );
-
   // Pop cooldown: continuous collision while pinching, 300ms between pops
   const popCooldownRef = useRef(0);
-
-  // Update cursor position (shared via ref, rendered as HTML overlay)
-  const showCursor = !!hand && (gameState === 'playing' || gameState === 'countdown');
-  if (hand && app) {
-    const w = app.screen.width ?? 0;
-    const h = app.screen.height ?? 0;
-    const vw = videoRef.current?.videoWidth || 640;
-    const vh = videoRef.current?.videoHeight || 480;
-    const cx = (hand.indexTip.x / vw) * w;
-    const cy = (hand.indexTip.y / vh) * h;
-    if (Number.isFinite(cx) && Number.isFinite(cy)) {
-      cursorRef.current = {
-        x: cx, y: cy,
-        isPinching: pinchState.isPinching,
-        visible: showCursor,
-      };
-    }
-  } else {
-    cursorRef.current = { ...cursorRef.current, visible: showCursor };
-  }
 
   // Game tick
   useTick(({ deltaTime }) => {
@@ -276,73 +231,6 @@ function GameScene({
   );
 }
 
-// ── HTML Cursor overlay with interpolation for smooth movement ──
-function CursorOverlay({ cursorRef }: { cursorRef: React.MutableRefObject<CursorState> }) {
-  const ringRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let running = true;
-    // Interpolated position for smooth 60fps rendering
-    let lerpX = 0, lerpY = 0;
-    const LERP = 0.35; // 0 = frozen, 1 = instant snap
-
-    function loop() {
-      if (!running) return;
-      const ring = ringRef.current;
-      const c = cursorRef.current;
-      if (ring) {
-        if (c.visible && c.x > 0 && c.y > 0) {
-          // Lerp toward target for smooth motion between tracking frames
-          lerpX += (c.x - lerpX) * LERP;
-          lerpY += (c.y - lerpY) * LERP;
-          ring.style.display = 'block';
-          ring.style.transform = `translate(${lerpX}px, ${lerpY}px)`;
-          if (c.isPinching) {
-            ring.style.width = '28px';
-            ring.style.height = '28px';
-            ring.style.marginLeft = '-14px';
-            ring.style.marginTop = '-14px';
-            ring.style.borderColor = '#FFD54F';
-            ring.style.background = 'rgba(255, 213, 79, 0.5)';
-            ring.style.boxShadow = '0 0 24px rgba(255,213,79,0.6)';
-          } else {
-            ring.style.width = '52px';
-            ring.style.height = '52px';
-            ring.style.marginLeft = '-26px';
-            ring.style.marginTop = '-26px';
-            ring.style.borderColor = 'rgba(255,255,255,0.8)';
-            ring.style.background = 'rgba(255,255,255,0.1)';
-            ring.style.boxShadow = '0 0 16px rgba(255,255,255,0.3)';
-          }
-        } else {
-          ring.style.display = 'none';
-          lerpX = c.x;
-          lerpY = c.y;
-        }
-      }
-      requestAnimationFrame(loop);
-    }
-    loop();
-    return () => { running = false; };
-  }, [cursorRef]);
-
-  return (
-    <div
-      ref={ringRef}
-      style={{
-        position: 'fixed', left: 0, top: 0,
-        display: 'none',
-        width: 52, height: 52,
-        marginLeft: -26, marginTop: -26,
-        borderRadius: '50%',
-        border: '3px solid rgba(255,255,255,0.8)',
-        zIndex: 80,
-        pointerEvents: 'none',
-      }}
-    />
-  );
-}
-
 // ── Floating text HTML overlay ──
 function FloatingTextOverlay({ texts }: { texts: FloatingTextSystem }) {
   const [, setTick] = useState(0);
@@ -431,14 +319,20 @@ export function App() {
   const setState = useGameStore((s) => s.setState);
   const resetGame = useGameStore((s) => s.resetGame);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const cursorRef = useRef<CursorState>({ x: 0, y: 0, isPinching: false, visible: false });
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [trackingStatus, setTrackingStatus] = useState({ detectorReady: false, hasHand: false, error: null as string | null });
+  const [screenSize, setScreenSize] = useState({ width: window.innerWidth, height: window.innerHeight });
   const floatingTexts = useMemo(() => new FloatingTextSystem(), []);
-  const handleTrackingStatus = useCallback((s: { detectorReady: boolean; hasHand: boolean; error: string | null }) => {
-    setTrackingStatus(s);
+
+  // Track screen size for cursor coordinate mapping
+  useEffect(() => {
+    function onResize() { setScreenSize({ width: window.innerWidth, height: window.innerHeight }); }
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
   }, []);
+
+  // Cursor system from motion-engine
+  const { cursorRef, detectorReady, hasHand, error: trackingError } = useCursor(videoRef, screenSize);
 
   useEffect(() => {
     let cancelled = false;
@@ -488,7 +382,7 @@ export function App() {
         background="#87CEEB"
         antialias
       >
-        <GameScene videoRef={videoRef} cursorRef={cursorRef} onTrackingStatus={handleTrackingStatus} />
+        <GameScene cursorRef={cursorRef} />
       </Application>
 
       {/* HTML cursor overlay — always reliable, bypasses PixiJS */}
@@ -510,8 +404,8 @@ export function App() {
 
       {gameState === 'idle' && (
         <StartScreen
-          loading={!cameraReady || !trackingStatus.detectorReady}
-          error={cameraError || trackingStatus.error}
+          loading={!cameraReady || !detectorReady}
+          error={cameraError || trackingError}
           onStart={handleStart}
         />
       )}

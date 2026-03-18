@@ -18,9 +18,14 @@ export { TiltSteering } from './input/tilt-steering';
 export { SFX, unlockAudio } from './audio/synth-sfx';
 export { MicVolume } from './audio/mic-volume';
 
+// Cursor
+export type { CursorState } from './cursor/types';
+export { CursorOverlay } from './components/CursorOverlay';
+
 // Hooks
 export { useCamera } from './hooks/useCamera';
 export { useHandTracking } from './hooks/useHandTracking';
 export { usePinchDetector } from './hooks/usePinchDetector';
+export { useCursor } from './hooks/useCursor';
 export { useFaceTracking } from './hooks/useFaceTracking';
 export { useMicVolume } from './hooks/useMicVolume';
