@@ -119,8 +119,10 @@ export function useFaceTracking(
           const rightEye = filters[0].update(rawRight.x, rawRight.y);
           const leftEye = filters[1].update(rawLeft.x, rawLeft.y);
 
-          // tiltAngle: positive = head tilted right (clockwise)
-          const tiltAngle = Math.atan2(rightEye.y - leftEye.y, rightEye.x - leftEye.x);
+          // Raw atan2 gives positive when right eye is lower (head tilted right).
+          // But the canvas is mirrored (front camera), so left/right are swapped.
+          // Negate to make: player tilts head left → negative → bike moves left.
+          const tiltAngle = -Math.atan2(rightEye.y - leftEye.y, rightEye.x - leftEye.x);
 
           setResult({ tiltAngle, isTracking: true });
         }).catch(() => {

@@ -212,14 +212,18 @@ function GameScene({
     const screenW = app?.screen.width ?? 400;
     const screenH = app?.screen.height ?? 800;
 
-    // Calculate speed from mic volume
-    const effectiveVolume = volumeRef.current;
-    const rawSpeed = BASE_SPEED + effectiveVolume * (MAX_SPEED - BASE_SPEED);
+    // Update volume from mic (must come before speed calc)
+    if (audioStream) {
+      volumeRef.current = volume;
+    }
+    hasMicRef.current = audioStream !== null;
+
+    // Calculate speed from volume — amplify mic input for responsiveness
+    const ampVolume = Math.min(1, volumeRef.current * 3.5);
+    const rawSpeed = BASE_SPEED + ampVolume * (MAX_SPEED - BASE_SPEED);
     const speed = rawSpeed * getSpeedMultiplier(bike);
     const speedNorm = (speed - BASE_SPEED) / (MAX_SPEED - BASE_SPEED);
     speedRef.current = Math.max(0, Math.min(1, speedNorm));
-    volumeRef.current = volume;
-    hasMicRef.current = audioStream !== null;
 
     // Update engine sound
     engineSound.setSpeed(speedRef.current);
@@ -228,8 +232,8 @@ function GameScene({
     // Update bike steering
     updateBike(bike, steeringRef.current, dt);
 
-    // Scroll road
-    scrollOffsetRef.current += speed * dt * 0.1;
+    // Scroll road — high multiplier so speed difference is very visible
+    scrollOffsetRef.current += speed * dt * 0.5;
 
     // Distance tracking (speed in px/s → convert to "meters")
     addDistance(speed * dt * 0.05);
@@ -538,30 +542,6 @@ export function App() {
 
       {showTouchThrottle && <TouchThrottle onThrottleChange={handleTouchThrottle} />}
 
-      {/* Tracking status */}
-      {(gameState === 'playing' || gameState === 'countdown') && (
-        <div style={{
-          position: 'fixed', top: 12, left: '50%', transform: 'translateX(-50%)',
-          padding: '6px 16px', borderRadius: 20, fontSize: 14, fontWeight: 600,
-          zIndex: 150, pointerEvents: 'none',
-          background: trackingStatus.error
-            ? 'rgba(255,60,60,0.85)'
-            : trackingStatus.hasFace
-              ? 'rgba(76,175,80,0.85)'
-              : trackingStatus.detectorReady
-                ? 'rgba(255,193,7,0.85)'
-                : 'rgba(0,0,0,0.6)',
-          color: '#fff',
-        }}>
-          {trackingStatus.error
-            ? `追踪出错: ${trackingStatus.error}`
-            : trackingStatus.hasFace
-              ? '😊 已识别面部 — 歪头转向' + (audioStream ? '，大声加速！' : '')
-              : trackingStatus.detectorReady
-                ? '请将面部对准摄像头...'
-                : '正在加载面部识别模型...'}
-        </div>
-      )}
     </div>
   );
 }

@@ -17,9 +17,16 @@ export function StartScreen({ loading, error, onStart }: Props) {
       <h1 style={{ fontSize: 36, fontWeight: 800, margin: '0 0 8px' }}>
         气球捏捏乐
       </h1>
-      <p style={{ fontSize: 16, opacity: 0.8, marginBottom: 32 }}>
+      <p style={{ fontSize: 16, opacity: 0.8, marginBottom: 16 }}>
         Balloon Popper
       </p>
+      <div style={{
+        fontSize: 14, opacity: 0.9, marginBottom: 24, maxWidth: 280, lineHeight: 1.6,
+        background: 'rgba(0,0,0,0.2)', borderRadius: 12, padding: '12px 16px',
+      }}>
+        <div>✋ 伸出手掌对准摄像头</div>
+        <div>👌 捏合拇指和食指 → 戳破气球</div>
+      </div>
       {error ? (
         <div style={{
           background: 'rgba(255,0,0,0.2)', borderRadius: 12,

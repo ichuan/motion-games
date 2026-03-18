@@ -521,30 +521,6 @@ export function App() {
       {gameState === 'playing' && <HUD />}
       {gameState === 'result' && <ResultScreen onRestart={handleRestart} />}
 
-      {/* Tracking status indicator */}
-      {(gameState === 'playing' || gameState === 'countdown') && (
-        <div style={{
-          position: 'fixed', top: 12, left: '50%', transform: 'translateX(-50%)',
-          padding: '6px 16px', borderRadius: 20, fontSize: 14, fontWeight: 600,
-          zIndex: 150, pointerEvents: 'none',
-          background: trackingStatus.error
-            ? 'rgba(255,60,60,0.85)'
-            : trackingStatus.hasHand
-              ? 'rgba(76,175,80,0.85)'
-              : trackingStatus.detectorReady
-                ? 'rgba(255,193,7,0.85)'
-                : 'rgba(0,0,0,0.6)',
-          color: '#fff',
-        }}>
-          {trackingStatus.error
-            ? `追踪出错: ${trackingStatus.error}`
-            : trackingStatus.hasHand
-              ? '✋ 已识别到手 — 捏合拇指食指戳气球'
-              : trackingStatus.detectorReady
-                ? '请伸出手掌对准摄像头...'
-                : '正在加载手部识别模型...'}
-        </div>
-      )}
     </div>
   );
 }
