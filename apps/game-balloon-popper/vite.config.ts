@@ -9,5 +9,20 @@ export default defineConfig({
   build: {
     target: 'es2020',
     outDir: 'dist',
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          tfjs: [
+            '@tensorflow/tfjs-core',
+            '@tensorflow/tfjs-converter',
+            '@tensorflow/tfjs-backend-webgl',
+            '@tensorflow-models/hand-pose-detection',
+          ],
+          pixi: ['pixi.js', '@pixi/react'],
+          react: ['react', 'react-dom'],
+        },
+      },
+    },
   },
 });
