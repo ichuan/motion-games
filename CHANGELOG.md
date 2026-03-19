@@ -1,5 +1,18 @@
 # Project Changelog
 
+## [2026-03-19]
+- [x] 魔法物理沙盒 (Magic Physics Sandbox) 完成 (games.981234.xyz/physics-sandbox/)
+  - Rapier2D WASM 物理引擎 (`@dimforge/rapier2d-compat`)
+  - 手势捏合抓取 + 抛投机制（kinematic/dynamic 切换）
+  - 积木塔生成 + 难度递增（层数/交错排列）
+  - 得分系统：推倒积木 10分/块，全清 bonus 100分
+  - 碰撞粒子、屏幕震动、飘字特效
+  - 隐形墙防止物体出界
+- [x] 游标系统从 balloon-popper 抽象到 motion-engine
+  - `useCursor()` hook：合并手部追踪 + 捏合检测 + 坐标映射
+  - `CursorOverlay` 组件：HTML div + rAF + LERP 平滑
+  - `CursorState` 类型导出
+
 ## [2026-03-18]
 - [x] 咆哮摩托 (Roaring Motorbike) MVP 完成 (games.981234.xyz/roaring-motorbike/)
   - 伪 3D 俯视公路，竖屏优先
