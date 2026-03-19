@@ -18,5 +18,5 @@ export const CHAR_FALL_SPEED = 600; // px/s falling speed
 export const PERFECT_ZONE_RATIO = 0.2; // 20% of pillar width
 
 // Mouth detection thresholds (hysteresis)
-export const MOUTH_OPEN_THRESHOLD = 0.25;
-export const MOUTH_CLOSE_THRESHOLD = 0.15;
+export const MOUTH_OPEN_THRESHOLD = 0.18;
+export const MOUTH_CLOSE_THRESHOLD = 0.10;
