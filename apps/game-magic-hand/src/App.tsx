@@ -118,12 +118,45 @@ function AREffects({
           .fill({ color: 0xFFFFFF, alpha: 0.9 });
       }
     } else if (gesture === 'point') {
-      // Point: only index finger laser trail, no other effects
-      // Trails are already drawn above; just draw index dot
-      const idx = landmarks[8]; // INDEX_TIP
-      if (Number.isFinite(idx.x)) {
-        mandalaG.circle(idx.x, idx.y, 6).fill({ color: 0xFF8800, alpha: 0.9 });
-        mandalaG.circle(idx.x, idx.y, 12).stroke({ color: 0xFF8800, width: 1.5, alpha: 0.4 });
+      // Point: laser beam shooting from fingertip along finger direction
+      const tip = landmarks[8];  // INDEX_TIP
+      const pip = landmarks[6];  // INDEX_PIP
+      if (Number.isFinite(tip.x) && Number.isFinite(pip.x)) {
+        const dx = tip.x - pip.x;
+        const dy = tip.y - pip.y;
+        const len = Math.hypot(dx, dy);
+        if (len > 1) {
+          const nx = dx / len;
+          const ny = dy / len;
+          // Beam extends far from fingertip (2000px)
+          const beamLen = 2000;
+          const ex = tip.x + nx * beamLen;
+          const ey = tip.y + ny * beamLen;
+          const t = timeRef.current;
+          const flicker = 0.85 + Math.sin(t * 20) * 0.1 + Math.sin(t * 47) * 0.05;
+
+          // Outer glow (wide, faint)
+          mandalaG.setStrokeStyle({ width: 20 * flicker, color: 0xFF4400, alpha: 0.08, cap: 'round' });
+          mandalaG.moveTo(tip.x, tip.y);
+          mandalaG.lineTo(ex, ey);
+          mandalaG.stroke();
+          // Mid glow
+          mandalaG.setStrokeStyle({ width: 10 * flicker, color: 0xFF6600, alpha: 0.2, cap: 'round' });
+          mandalaG.moveTo(tip.x, tip.y);
+          mandalaG.lineTo(ex, ey);
+          mandalaG.stroke();
+          // Core beam (bright, narrow)
+          mandalaG.setStrokeStyle({ width: 3, color: 0xFFCC44, alpha: 0.9 * flicker, cap: 'round' });
+          mandalaG.moveTo(tip.x, tip.y);
+          mandalaG.lineTo(ex, ey);
+          mandalaG.stroke();
+
+          // Fingertip glow point
+          const pulse = 0.7 + Math.sin(t * 15) * 0.3;
+          mandalaG.circle(tip.x, tip.y, 12 * pulse).fill({ color: 0xFF6600, alpha: 0.2 });
+          mandalaG.circle(tip.x, tip.y, 6 * pulse).fill({ color: 0xFFAA00, alpha: 0.45 });
+          mandalaG.circle(tip.x, tip.y, 3).fill({ color: 0xFFFFFF, alpha: 0.95 });
+        }
       }
     }
   });
@@ -176,6 +209,25 @@ function BloomLayer({
       const radius = palmRadius(landmarks);
       if (Number.isFinite(center.x) && radius > 5) {
         drawMandala(mandalaG, center.x, center.y, radius, timeRef.current);
+      }
+    } else if (gesture === 'point') {
+      // Bloom duplicate of the laser beam for glow effect
+      const tip = landmarks[8];
+      const pip = landmarks[6];
+      if (Number.isFinite(tip.x) && Number.isFinite(pip.x)) {
+        const dx = tip.x - pip.x;
+        const dy = tip.y - pip.y;
+        const len = Math.hypot(dx, dy);
+        if (len > 1) {
+          const nx = dx / len;
+          const ny = dy / len;
+          const ex = tip.x + nx * 2000;
+          const ey = tip.y + ny * 2000;
+          mandalaG.setStrokeStyle({ width: 12, color: 0xFF6600, alpha: 0.5, cap: 'round' });
+          mandalaG.moveTo(tip.x, tip.y);
+          mandalaG.lineTo(ex, ey);
+          mandalaG.stroke();
+        }
       }
     }
   });

@@ -52,6 +52,52 @@ export class FingertipTrails {
     }
   }
 
+  /** Draw only the index finger trail as a thick, bright laser beam */
+  drawLaser(g: Graphics, time: number): void {
+    const buf = this.trails[1]; // index finger = FINGERTIPS[1] = 8
+    if (!buf || buf.length < 2) return;
+
+    // collect contiguous non-null points
+    const pts: Point2D[] = [];
+    for (let j = 0; j < buf.length; j++) {
+      const p = buf[j];
+      if (p) pts.push(p);
+      else pts.length = 0; // restart on gap
+    }
+    if (pts.length < 2) return;
+
+    // Outer glow layer (wide, low alpha)
+    for (let layer = 0; layer < 3; layer++) {
+      const widths = [18, 10, 4];
+      const alphas = [0.12, 0.3, 0.85];
+      const colors = [0xFF4400, 0xFF8800, 0xFFDD44];
+
+      for (let j = 0; j < pts.length - 1; j++) {
+        const t = j / (pts.length - 1);
+        const alpha = alphas[layer] * (0.15 + 0.85 * t);
+        const width = widths[layer] * (0.3 + 0.7 * t);
+
+        g.setStrokeStyle({ width, color: colors[layer], alpha, cap: 'round' });
+        g.moveTo(pts[j].x, pts[j].y);
+        if (j < pts.length - 2) {
+          const nx = pts[j + 1];
+          const nn = pts[j + 2];
+          g.quadraticCurveTo(nx.x, nx.y, (nx.x + nn.x) / 2, (nx.y + nn.y) / 2);
+        } else {
+          g.lineTo(pts[j + 1].x, pts[j + 1].y);
+        }
+        g.stroke();
+      }
+    }
+
+    // Bright tip glow
+    const tip = pts[pts.length - 1];
+    const pulse = 0.8 + Math.sin(time * 12) * 0.2;
+    g.circle(tip.x, tip.y, 14 * pulse).fill({ color: 0xFF6600, alpha: 0.15 });
+    g.circle(tip.x, tip.y, 8 * pulse).fill({ color: 0xFFAA00, alpha: 0.35 });
+    g.circle(tip.x, tip.y, 4).fill({ color: 0xFFFFFF, alpha: 0.95 });
+  }
+
   /** Clear all trail history */
   clear(): void {
     for (const buf of this.trails) buf.length = 0;
