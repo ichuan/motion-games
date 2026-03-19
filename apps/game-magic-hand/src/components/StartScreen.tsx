@@ -42,6 +42,7 @@ export function StartScreen({ loading, error, onStart }: Props) {
       }}>
         <div>{t('inst1')}</div>
         <div>{t('inst2')}</div>
+        <div>{t('inst3')}</div>
       </div>
       {error ? (
         <div style={{

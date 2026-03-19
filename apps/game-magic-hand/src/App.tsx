@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { BlurFilter, Container, Graphics, Sprite, Texture } from 'pixi.js';
-import { useCamera, useHandTracking, useT, getLocale, common } from '@motion-games/engine';
+import { useCamera, useHandTracking } from '@motion-games/engine';
 import type { Point2D } from '@motion-games/engine';
 import texts from './i18n';
 import { StartScreen } from './components/StartScreen';
 import { useAppStore } from './store/useAppStore';
 import { mapAllLandmarks } from './coord';
-import { palmCenter, palmRadius } from './constants';
+import { palmCenter, palmRadius, FINGERTIPS, FINGER_COLORS } from './constants';
 import { drawLandmarkLines } from './effects/LandmarkLines';
 import { drawMandala } from './effects/Mandala';
 import { FingertipParticles } from './effects/FingertipParticles';
+import { FingertipTrails } from './effects/FingertipTrails';
+import { GestureDetector, type Gesture } from './effects/GestureDetector';
 
 extend({ Container, Graphics, Sprite });
 
@@ -32,20 +34,15 @@ function CameraBackground({ videoEl }: { videoEl: HTMLVideoElement }) {
   useTick(() => {
     const sprite = spriteRef.current;
     if (!sprite || !app || !texRef.current) return;
-
-    // Update video texture each frame
     texRef.current.source.update();
 
     const sw = app.screen.width;
     const sh = app.screen.height;
     const vw = videoEl.videoWidth || 640;
     const vh = videoEl.videoHeight || 480;
-
-    // Cover mode: scale to fill, center, mirror for front camera
     const scale = Math.max(sw / vw, sh / vh);
     sprite.width = vw * scale;
     sprite.height = vh * scale;
-    // Mirror horizontally: flip around center
     sprite.scale.x = -Math.abs(sprite.scale.x);
     sprite.x = (sw + vw * scale) / 2;
     sprite.y = (sh - vh * scale) / 2;
@@ -54,66 +51,105 @@ function CameraBackground({ videoEl }: { videoEl: HTMLVideoElement }) {
   return <pixiSprite ref={spriteRef} texture={texRef.current ?? Texture.EMPTY} />;
 }
 
-// ── AR Effects layer: landmark lines + mandala + particles ──
+// ── AR Effects layer ──
 function AREffects({
   landmarks,
+  gesture,
   particles,
+  trails,
 }: {
   landmarks: Point2D[] | null;
+  gesture: Gesture;
   particles: FingertipParticles;
+  trails: FingertipTrails;
 }) {
   const linesRef = useRef<any>(null);
   const mandalaRef = useRef<any>(null);
+  const trailsRef = useRef<any>(null);
   const timeRef = useRef(0);
 
   useTick(({ deltaTime }) => {
     const dt = deltaTime / 60;
     timeRef.current += dt;
 
-    // Update particles
     particles.update(dt);
+    trails.update(landmarks);
 
     const linesG = linesRef.current;
     const mandalaG = mandalaRef.current;
-    if (!linesG || !mandalaG) return;
+    const trailsG = trailsRef.current;
+    if (!linesG || !mandalaG || !trailsG) return;
 
     linesG.clear();
     mandalaG.clear();
+    trailsG.clear();
+
+    // Always draw trails (they fade naturally when no hand)
+    trails.draw(trailsG);
 
     if (!landmarks) return;
 
-    // Draw landmark connections
-    drawLandmarkLines(linesG, landmarks);
-
-    // Draw palm mandala
-    const center = palmCenter(landmarks);
-    const radius = palmRadius(landmarks);
-    if (Number.isFinite(center.x) && radius > 5) {
-      drawMandala(mandalaG, center.x, center.y, radius, timeRef.current);
+    if (gesture === 'open') {
+      // Full effect: lines + mandala + particles
+      drawLandmarkLines(linesG, landmarks);
+      const center = palmCenter(landmarks);
+      const radius = palmRadius(landmarks);
+      if (Number.isFinite(center.x) && radius > 5) {
+        drawMandala(mandalaG, center.x, center.y, radius, timeRef.current);
+      }
+      particles.emit(landmarks);
+    } else if (gesture === 'fist') {
+      // Fist: particles converge to palm center, energy gathering effect
+      const center = palmCenter(landmarks);
+      if (Number.isFinite(center.x)) {
+        // Emit concentrated particles at palm center
+        const fakeLandmarks = landmarks.map((_, i) =>
+          FINGERTIPS.includes(i) ? center : landmarks[i],
+        );
+        particles.emit(fakeLandmarks);
+        // Draw pulsing energy circle at palm
+        const radius = palmRadius(landmarks);
+        const pulse = 0.7 + Math.sin(timeRef.current * 6) * 0.3;
+        mandalaG.circle(center.x, center.y, radius * 0.5 * pulse)
+          .fill({ color: 0xFF4444, alpha: 0.15 });
+        mandalaG.circle(center.x, center.y, radius * 0.3 * pulse)
+          .fill({ color: 0xFFAA00, alpha: 0.25 });
+        mandalaG.circle(center.x, center.y, 6)
+          .fill({ color: 0xFFFFFF, alpha: 0.9 });
+      }
+    } else if (gesture === 'point') {
+      // Point: only index finger laser trail, no other effects
+      // Trails are already drawn above; just draw index dot
+      const idx = landmarks[8]; // INDEX_TIP
+      if (Number.isFinite(idx.x)) {
+        mandalaG.circle(idx.x, idx.y, 6).fill({ color: 0xFF8800, alpha: 0.9 });
+        mandalaG.circle(idx.x, idx.y, 12).stroke({ color: 0xFF8800, width: 1.5, alpha: 0.4 });
+      }
     }
-
-    // Emit fingertip particles
-    particles.emit(landmarks);
   });
 
   return (
     <>
+      <pixiGraphics ref={trailsRef} draw={NOOP_DRAW} />
       <pixiGraphics ref={linesRef} draw={NOOP_DRAW} />
       <pixiGraphics ref={mandalaRef} draw={NOOP_DRAW} />
     </>
   );
 }
 
-// ── Bloom layer: blurred copy of effects for glow ──
+// ── Bloom layer ──
 function BloomLayer({
   landmarks,
-  particles,
+  gesture,
+  trails,
 }: {
   landmarks: Point2D[] | null;
-  particles: FingertipParticles;
+  gesture: Gesture;
+  trails: FingertipTrails;
 }) {
   const linesRef = useRef<any>(null);
   const mandalaRef = useRef<any>(null);
+  const trailsRef = useRef<any>(null);
   const timeRef = useRef(0);
 
   useTick(({ deltaTime }) => {
@@ -122,19 +158,25 @@ function BloomLayer({
 
     const linesG = linesRef.current;
     const mandalaG = mandalaRef.current;
-    if (!linesG || !mandalaG) return;
+    const trailsG = trailsRef.current;
+    if (!linesG || !mandalaG || !trailsG) return;
 
     linesG.clear();
     mandalaG.clear();
+    trailsG.clear();
+
+    // Bloom on trails
+    trails.draw(trailsG);
 
     if (!landmarks) return;
 
-    drawLandmarkLines(linesG, landmarks);
-
-    const center = palmCenter(landmarks);
-    const radius = palmRadius(landmarks);
-    if (Number.isFinite(center.x) && radius > 5) {
-      drawMandala(mandalaG, center.x, center.y, radius, timeRef.current);
+    if (gesture === 'open') {
+      drawLandmarkLines(linesG, landmarks);
+      const center = palmCenter(landmarks);
+      const radius = palmRadius(landmarks);
+      if (Number.isFinite(center.x) && radius > 5) {
+        drawMandala(mandalaG, center.x, center.y, radius, timeRef.current);
+      }
     }
   });
 
@@ -142,30 +184,48 @@ function BloomLayer({
 
   return (
     <pixiContainer alpha={0.4} filters={[blurFilter]} blendMode="add">
+      <pixiGraphics ref={trailsRef} draw={NOOP_DRAW} />
       <pixiGraphics ref={linesRef} draw={NOOP_DRAW} />
       <pixiGraphics ref={mandalaRef} draw={NOOP_DRAW} />
     </pixiContainer>
   );
 }
 
-// ── Main scene inside PixiJS Application ──
+// ── Gesture indicator HUD ──
+function GestureHUD({ gesture }: { gesture: Gesture }) {
+  const labels: Record<Gesture, string> = { open: '✋ 法阵', fist: '✊ 聚能', point: '☝️ 激光' };
+  return (
+    <div style={{
+      position: 'fixed', top: 'calc(16px + env(safe-area-inset-top, 0px))', left: '50%',
+      transform: 'translateX(-50%)', zIndex: 100, pointerEvents: 'none',
+      background: 'rgba(0,0,0,0.4)', color: '#fff', borderRadius: 16,
+      padding: '4px 14px', fontSize: 14, fontWeight: 600, backdropFilter: 'blur(8px)',
+    }}>
+      {labels[gesture]}
+    </div>
+  );
+}
+
+// ── Main scene ──
 function Scene({
   videoEl,
   landmarks,
+  gesture,
 }: {
   videoEl: HTMLVideoElement | null;
   landmarks: Point2D[] | null;
+  gesture: Gesture;
 }) {
   const particles = useMemo(() => new FingertipParticles(), []);
+  const trails = useMemo(() => new FingertipTrails(), []);
 
   useEffect(() => () => particles.destroy(), [particles]);
 
   return (
     <>
       {videoEl && <CameraBackground videoEl={videoEl} />}
-      <BloomLayer landmarks={landmarks} particles={particles} />
-      <AREffects landmarks={landmarks} particles={particles} />
-      {/* ParticleContainer rendered directly via ref */}
+      <BloomLayer landmarks={landmarks} gesture={gesture} trails={trails} />
+      <AREffects landmarks={landmarks} gesture={gesture} particles={particles} trails={trails} />
       <pixiContainer ref={(ref: any) => {
         if (ref && !ref.children.some((c: any) => c === particles.container)) {
           ref.addChild(particles.container);
@@ -184,6 +244,8 @@ export function App() {
   const { hand, detectorReady, error: trackingError } = useHandTracking(videoRef);
 
   const [screenSize, setScreenSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const gestureDetector = useMemo(() => new GestureDetector(), []);
+  const [gesture, setGesture] = useState<Gesture>('open');
 
   useEffect(() => {
     function onResize() { setScreenSize({ width: window.innerWidth, height: window.innerHeight }); }
@@ -191,13 +253,19 @@ export function App() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Map hand landmarks from video coords to stage coords (cover mode)
   const stageLandmarks = useMemo(() => {
     if (!hand) return null;
     const vw = videoRef.current?.videoWidth || 640;
     const vh = videoRef.current?.videoHeight || 480;
     return mapAllLandmarks(hand.landmarks, vw, vh, screenSize.width, screenSize.height);
   }, [hand, screenSize, videoRef]);
+
+  // Detect gesture from raw landmarks (before stage mapping — doesn't matter for distance ratios)
+  useEffect(() => {
+    if (!hand) return;
+    const g = gestureDetector.detect(hand.landmarks);
+    setGesture(g);
+  }, [hand, gestureDetector]);
 
   const handleStart = useCallback(() => {
     document.documentElement.requestFullscreen?.().catch(() => {});
@@ -213,10 +281,9 @@ export function App() {
         background="#000000"
         antialias
       >
-        <Scene videoEl={videoEl} landmarks={stageLandmarks} />
+        <Scene videoEl={videoEl} landmarks={stageLandmarks} gesture={gesture} />
       </Application>
 
-      {/* Hidden video element for camera feed + hand detection */}
       <video
         ref={videoRef}
         autoPlay
@@ -224,6 +291,8 @@ export function App() {
         muted
         style={{ position: 'fixed', opacity: 0, pointerEvents: 'none', width: 1, height: 1 }}
       />
+
+      {appState === 'active' && <GestureHUD gesture={gesture} />}
 
       {appState === 'idle' && (
         <StartScreen
