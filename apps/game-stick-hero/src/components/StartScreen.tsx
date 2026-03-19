@@ -49,6 +49,9 @@ export function StartScreen({ loading, error, onStart }: Props) {
           <div style={{ marginTop: 4, fontSize: 12, opacity: 0.5 }}>
             也可以按住屏幕代替张嘴
           </div>
+          <div style={{ marginTop: 4, fontSize: 12, opacity: 0.5 }}>
+            📱 横屏游玩效果更佳
+          </div>
         </div>
       </div>
 

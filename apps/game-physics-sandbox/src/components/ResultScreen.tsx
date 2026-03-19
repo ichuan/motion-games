@@ -42,6 +42,15 @@ export function ResultScreen({ onRestart }: Props) {
       >
         再来一局
       </button>
+      <a
+        href="/"
+        style={{
+          color: 'rgba(255,255,255,0.4)', fontSize: 12,
+          textDecoration: 'none', marginTop: 16,
+        }}
+      >
+        返回大厅
+      </a>
     </div>
   );
 }

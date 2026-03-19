@@ -57,6 +57,15 @@ export function StartScreen({ loading, error, onStart }: Props) {
           首次加载可能需要几秒...
         </p>
       )}
+      <a
+        href="/"
+        style={{
+          color: 'rgba(255,255,255,0.4)', fontSize: 12,
+          textDecoration: 'none', marginTop: 16,
+        }}
+      >
+        返回大厅
+      </a>
     </div>
   );
 }
