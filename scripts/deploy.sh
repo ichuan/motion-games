@@ -14,8 +14,8 @@ echo "Building stick-hero..."
 pnpm build:stick
 
 echo "Deploying to games.981234.xyz..."
-# Hub (static HTML) → root
-rsync -avz apps/hub/index.html dev:/srv/games.981234.xyz/index.html
+# Hub (static HTML + PWA assets) → root
+rsync -avz apps/hub/index.html apps/hub/manifest.json apps/hub/icon.svg dev:/srv/games.981234.xyz/
 # Balloon popper → /balloon-popper/
 rsync -avz --delete apps/game-balloon-popper/dist/ dev:/srv/games.981234.xyz/balloon-popper/
 # Roaring motorbike → /roaring-motorbike/
