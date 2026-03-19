@@ -22,7 +22,7 @@ export function useMicVolume(
       return;
     }
 
-    const ALPHA = 0.3;
+    const ALPHA = 0.6;
 
     function tick() {
       const mic = micRef.current;

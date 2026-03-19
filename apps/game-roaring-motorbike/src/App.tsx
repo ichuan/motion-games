@@ -219,7 +219,7 @@ function GameScene({
     hasMicRef.current = audioStream !== null;
 
     // Calculate speed from volume — amplify mic input for responsiveness
-    const ampVolume = Math.min(1, volumeRef.current * 3.5);
+    const ampVolume = Math.min(1, volumeRef.current * 4);
     const rawSpeed = BASE_SPEED + ampVolume * (MAX_SPEED - BASE_SPEED);
     const speed = rawSpeed * getSpeedMultiplier(bike);
     const speedNorm = (speed - BASE_SPEED) / (MAX_SPEED - BASE_SPEED);
@@ -427,7 +427,7 @@ export function App() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-          audio: true,
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: false },
         });
         if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
         // Separate audio stream

@@ -10,20 +10,22 @@ export class MicVolume {
     const source = ctx.createMediaStreamSource(stream);
     this.analyser = ctx.createAnalyser();
     this.analyser.fftSize = 256;
-    this.analyser.smoothingTimeConstant = 0.8;
     source.connect(this.analyser);
     // Do NOT connect to destination — we don't want to play back mic audio
-    this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+    this.dataArray = new Uint8Array(this.analyser.fftSize);
   }
 
-  /** Returns normalized volume 0-1 */
+  /** Returns normalized volume 0-1 based on RMS of time-domain waveform */
   getVolume(): number {
     if (!this.analyser || !this.dataArray) return 0;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.analyser.getByteFrequencyData(this.dataArray as any);
-    let sum = 0;
-    for (let i = 0; i < this.dataArray.length; i++) sum += this.dataArray[i];
-    return sum / (this.dataArray.length * 255);
+    this.analyser.getByteTimeDomainData(this.dataArray as any);
+    // Calculate RMS (root mean square) — true loudness measure
+    let sumSq = 0;
+    for (let i = 0; i < this.dataArray.length; i++) {
+      const v = (this.dataArray[i] - 128) / 128; // normalize to -1..1
+      sumSq += v * v;
+    }
+    return Math.sqrt(sumSq / this.dataArray.length);
   }
 
   dispose(): void {
