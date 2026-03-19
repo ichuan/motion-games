@@ -15,6 +15,7 @@ export function ResultScreen({ onRestart }: Props) {
       alignItems: 'center', justifyContent: 'center',
       background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)',
       zIndex: 200, color: '#fff', textAlign: 'center',
+      padding: 'env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px)',
       fontFamily: "'Segoe UI', sans-serif",
     }}>
       <div style={{ fontSize: 48, marginBottom: 8 }}>🎉</div>

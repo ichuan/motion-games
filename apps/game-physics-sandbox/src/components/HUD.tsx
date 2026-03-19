@@ -15,7 +15,7 @@ export function HUD() {
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0,
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      padding: '10px 20px',
+      padding: 'calc(10px + env(safe-area-inset-top, 0px)) calc(20px + env(safe-area-inset-right, 0px)) 10px calc(20px + env(safe-area-inset-left, 0px))',
       zIndex: 50, pointerEvents: 'none',
       fontFamily: "'Segoe UI', sans-serif",
       color: '#fff',

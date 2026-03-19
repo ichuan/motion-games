@@ -517,7 +517,7 @@ export function App() {
         playsInline
         muted
         style={{
-          position: 'fixed', bottom: 12, right: 12,
+          position: 'fixed', bottom: 'calc(12px + env(safe-area-inset-bottom, 0px))', right: 'calc(12px + env(safe-area-inset-right, 0px))',
           width: 120, height: 90, borderRadius: 12,
           objectFit: 'cover', transform: 'scaleX(-1)',
           opacity: 0.5, border: '2px solid rgba(255,255,255,0.3)',

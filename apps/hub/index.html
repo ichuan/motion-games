@@ -2,7 +2,13 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0f0c29" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/icon.svg" />
   <title>Motion Games - 体感小游戏</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -14,7 +20,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px 20px;
+      padding: calc(40px + env(safe-area-inset-top, 0px)) 20px calc(20px + env(safe-area-inset-bottom, 0px));
     }
     h1 {
       font-size: 36px;

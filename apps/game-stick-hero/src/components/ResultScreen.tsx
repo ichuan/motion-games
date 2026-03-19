@@ -21,6 +21,7 @@ export function ResultScreen({ onRestart }: Props) {
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
       color: '#fff', gap: 16,
+      padding: 'env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px)',
     }}>
       <div style={{ fontSize: 64 }}>{emoji}</div>
       <h2 style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>游戏结束</h2>

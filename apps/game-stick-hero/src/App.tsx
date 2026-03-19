@@ -622,8 +622,8 @@ export function App() {
         style={{
           position: 'fixed',
           ...(isPortrait
-            ? { top: 12, right: 12 }
-            : { bottom: 12, right: 12 }),
+            ? { top: 'calc(12px + env(safe-area-inset-top, 0px))', right: 'calc(12px + env(safe-area-inset-right, 0px))' }
+            : { bottom: 'calc(12px + env(safe-area-inset-bottom, 0px))', right: 'calc(12px + env(safe-area-inset-right, 0px))' }),
           width: 100, height: 75, borderRadius: 10,
           objectFit: 'cover', transform: 'scaleX(-1)',
           opacity: 0.5, border: '2px solid rgba(255,255,255,0.3)',
