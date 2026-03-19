@@ -14,6 +14,9 @@
     "dev:stick": "pnpm --filter game-stick-hero dev",
     "build:stick": "pnpm --filter game-stick-hero build",
     "preview:stick": "pnpm --filter game-stick-hero preview",
+    "dev:magic": "pnpm --filter game-magic-hand dev",
+    "build:magic": "pnpm --filter game-magic-hand build",
+    "preview:magic": "pnpm --filter game-magic-hand preview",
     "deploy": "bash scripts/deploy.sh"
   },
   "pnpm": {

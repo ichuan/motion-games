@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/constants.ts","./src/coord.ts","./src/i18n.ts","./src/main.tsx","./src/components/StartScreen.tsx","./src/effects/FingertipParticles.ts","./src/effects/LandmarkLines.ts","./src/effects/Mandala.ts","./src/store/useAppStore.ts"],"version":"5.9.3"}

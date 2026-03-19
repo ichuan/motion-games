@@ -45,6 +45,43 @@ importers:
         specifier: ^6.2.0
         version: 6.4.1
 
+  apps/game-magic-hand:
+    dependencies:
+      '@motion-games/engine':
+        specifier: workspace:*
+        version: link:../../packages/motion-engine
+      '@pixi/react':
+        specifier: ^8.0.0
+        version: 8.0.5(@types/react@19.2.14)(pixi.js@8.17.1)(react@19.2.4)
+      pixi.js:
+        specifier: ^8.6.0
+        version: 8.17.1
+      react:
+        specifier: ^19.0.0
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.4(react@19.2.4)
+      zustand:
+        specifier: ^5.0.0
+        version: 5.0.12(@types/react@19.2.14)(react@19.2.4)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.0
+        version: 4.7.0(vite@6.4.1)
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+      vite:
+        specifier: ^6.2.0
+        version: 6.4.1
+
   apps/game-physics-sandbox:
     dependencies:
       '@dimforge/rapier2d-compat':
