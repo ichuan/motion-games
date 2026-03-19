@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { BlurFilter, Container, Graphics, Sprite, Texture } from 'pixi.js';
-import { useCamera, useHandTracking } from '@motion-games/engine';
+import { useCamera, useHandTracking, useWakeLock } from '@motion-games/engine';
 import type { Point2D } from '@motion-games/engine';
 import texts from './i18n';
 import { StartScreen } from './components/StartScreen';
@@ -239,6 +239,7 @@ function Scene({
 export function App() {
   const appState = useAppStore((s) => s.state);
   const setState = useAppStore((s) => s.setState);
+  useWakeLock(appState === 'active');
 
   const { videoRef, isReady: cameraReady, error: cameraError } = useCamera();
   const { hand, detectorReady, error: trackingError } = useHandTracking(videoRef);

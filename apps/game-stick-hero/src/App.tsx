@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { Container, Graphics } from 'pixi.js';
-import { useFaceTracking, SFX, unlockAudio, getLocale, common } from '@motion-games/engine';
+import { useFaceTracking, SFX, unlockAudio, getLocale, common, useWakeLock } from '@motion-games/engine';
 import { StartScreen } from './components/StartScreen';
 import { CountdownOverlay } from './components/CountdownOverlay';
 import { HUD } from './components/HUD';
@@ -536,6 +536,7 @@ export function App() {
   const gameState = useGameStore((s) => s.state);
   const setState = useGameStore((s) => s.setState);
   const resetGame = useGameStore((s) => s.resetGame);
+  useWakeLock(gameState !== 'idle');
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const touchActiveRef = useRef(false);
   const [cameraReady, setCameraReady] = useState(false);

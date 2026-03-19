@@ -12,17 +12,19 @@
 | 🌉 [棍子英雄](https://games.981234.xyz/stick-hero/) | 面部追踪 — 张嘴/闭嘴控制木棍生长搭桥 |
 | 🏍️ [咆哮摩托](https://games.981234.xyz/roaring-motorbike/) | 头部倾斜转向 + 麦克风音量加速 |
 | 🧱 [魔法物理沙盒](https://games.981234.xyz/physics-sandbox/) | 手势抛投 + Rapier2D 物理引擎 |
+| ✋ [魔法之手](https://games.981234.xyz/magic-hand/) | 手部追踪 AR 特效（法阵/粒子/拖尾 + 手势切换） |
 
 ## 项目结构
 
 ```
 motion-games/
-├── packages/motion-engine       # 共享引擎：摄像头、手势/面部追踪、滤波、音效、i18n
+├── packages/motion-engine       # 共享引擎：摄像头、手势/面部追踪、滤波、音效、i18n、屏幕常亮
 ├── apps/hub                     # 游戏大厅（静态页 + PWA）
 ├── apps/game-balloon-popper     # 气球捏捏乐
 ├── apps/game-stick-hero         # 棍子英雄
 ├── apps/game-roaring-motorbike  # 咆哮摩托
 ├── apps/game-physics-sandbox    # 魔法物理沙盒
+├── apps/game-magic-hand         # 魔法之手
 └── scripts/deploy.sh            # 构建 + rsync 部署
 ```
 
@@ -45,6 +47,7 @@ pnpm dev:balloon    # 气球捏捏乐
 pnpm dev:stick      # 棍子英雄
 pnpm dev:motorbike  # 咆哮摩托
 pnpm dev:sandbox    # 魔法物理沙盒
+pnpm dev:magic      # 魔法之手
 ```
 
 需要 HTTPS 或 localhost 才能访问摄像头。

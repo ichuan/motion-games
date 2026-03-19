@@ -10,6 +10,11 @@
   - 手势识别切换特效主题（张开→法阵 / 握拳→聚能 / 竖食指→激光）
   - 5 帧滞回防抖避免手势抖动
   - video→stage cover 模式坐标映射
+  - 升级粒子特效：双纹理（64px 辉光 + 16px 星芒）、上浮飘散、旋转闪烁、800 粒子池
+- [x] 全局屏幕常亮（Screen Wake Lock API）
+  - motion-engine 新增 `useWakeLock()` hook
+  - 所有 5 个游戏统一接入，游戏进行中保持屏幕常亮
+  - 页面可见性变化时自动重新获取锁
 - [x] 咆哮摩托麦克风音量检测优化
   - 改用时域 RMS 计算真实响度（替代频域平均值）
   - 启用 echoCancellation + noiseSuppression 避免引擎声反馈回路

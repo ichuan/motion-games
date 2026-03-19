@@ -33,3 +33,4 @@ export { usePinchDetector } from './hooks/usePinchDetector';
 export { useCursor } from './hooks/useCursor';
 export { useFaceTracking } from './hooks/useFaceTracking';
 export { useMicVolume } from './hooks/useMicVolume';
+export { useWakeLock } from './hooks/useWakeLock';

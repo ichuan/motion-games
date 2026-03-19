@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { Container, Graphics } from 'pixi.js';
-import { useCursor, CursorOverlay, SFX, unlockAudio, useT, getLocale, common, type CursorState } from '@motion-games/engine';
+import { useCursor, CursorOverlay, SFX, unlockAudio, useT, getLocale, common, useWakeLock, type CursorState } from '@motion-games/engine';
 import balloonTexts from './i18n';
 import { StartScreen } from './components/StartScreen';
 import { CountdownOverlay } from './components/CountdownOverlay';
@@ -320,6 +320,7 @@ export function App() {
   const gameState = useGameStore((s) => s.state);
   const setState = useGameStore((s) => s.setState);
   const resetGame = useGameStore((s) => s.resetGame);
+  useWakeLock(gameState !== 'idle');
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
