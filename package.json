@@ -8,6 +8,9 @@
     "dev:motorbike": "pnpm --filter game-roaring-motorbike dev",
     "build:motorbike": "pnpm --filter game-roaring-motorbike build",
     "preview:motorbike": "pnpm --filter game-roaring-motorbike preview",
+    "dev:sandbox": "pnpm --filter game-physics-sandbox dev",
+    "build:sandbox": "pnpm --filter game-physics-sandbox build",
+    "preview:sandbox": "pnpm --filter game-physics-sandbox preview",
     "deploy": "bash scripts/deploy.sh"
   },
   "pnpm": {
