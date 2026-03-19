@@ -76,9 +76,10 @@ export class GestureDetector {
 
     const count = extended.filter(Boolean).length;
 
-    if (count === 5) return 'open';
-    if (count === 1 && extended[1]) return 'point'; // only index finger
-    if (count <= 1 && !extended[1]) return 'fist';
+    if (count >= 4) return 'open';
+    // Point: index extended, middle/ring/pinky curled (thumb ignored — often ambiguous)
+    if (extended[1] && !extended[2] && !extended[3] && !extended[4]) return 'point';
+    if (count <= 1) return 'fist';
     return 'open'; // fallback
   }
 }
