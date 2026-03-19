@@ -18,9 +18,9 @@ interface PData {
 
 const POOL_SIZE = 800;
 
-// Larger, softer glow texture (64x64)
+// Soft glow texture (40x40)
 function createGlowTexture(): Texture {
-  const size = 64;
+  const size = 40;
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
@@ -118,7 +118,7 @@ export class FingertipParticles {
         d.vy = Math.sin(angle) * speed;
         d.life = 1;
         d.maxLife = 0.8 + Math.random() * 0.8; // longer life: 0.8-1.6s
-        d.startScale = 0.4 + Math.random() * 0.6; // bigger: 0.4-1.0
+        d.startScale = 0.2 + Math.random() * 0.35; // 0.2-0.55
         d.rotSpeed = (Math.random() - 0.5) * 4; // sparkle rotation
 
         const p = d.particle;
