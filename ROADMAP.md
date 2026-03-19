@@ -12,6 +12,8 @@
 
 ## 📔 Done
 > 最近完成（查看完整历史 → [CHANGELOG.md](CHANGELOG.md)）
+- [x] 魔法之手 (Magic Hand)：AR 手部特效（掌心法阵 + 指尖粒子 + bloom）- 2026-03-19
+- [x] 咆哮摩托音量检测优化：时域 RMS + 回声消除 - 2026-03-19
 - [x] 棍子英雄 (Stick Hero)：嘴巴张合控制 + 面部检测扩展 - 2026-03-19
 - [x] 魔法物理沙盒 (Magic Physics Sandbox)：Rapier2D 物理 + 手势抛投 - 2026-03-19
 - [x] 游标系统抽象到 motion-engine（useCursor + CursorOverlay） - 2026-03-18

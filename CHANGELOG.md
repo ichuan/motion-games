@@ -1,6 +1,16 @@
 # Project Changelog
 
 ## [2026-03-19]
+- [x] 魔法之手 (Magic Hand) AR 特效应用 (games.981234.xyz/magic-hand/)
+  - 摄像头全屏背景 + 实时手部追踪叠加 AR 特效
+  - 掌心旋转法阵（同心圆环 + 旋转多边形 + 装饰点）
+  - 指尖粒子系统（ParticleContainer 对象池，500 粒子 60fps）
+  - 手骨彩色连线 + BlurFilter bloom 辉光
+  - video→stage cover 模式坐标映射
+- [x] 咆哮摩托麦克风音量检测优化
+  - 改用时域 RMS 计算真实响度（替代频域平均值）
+  - 启用 echoCancellation + noiseSuppression 避免引擎声反馈回路
+  - EMA alpha 0.3→0.6 提高响应速度
 - [x] 全站中英双语支持
   - motion-engine 新增 i18n 模块（useT hook + getLocale/setLocale）
   - Hub 右上角语言切换按钮，vanilla JS data-i18n 方案
