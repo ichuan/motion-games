@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { Container, Graphics } from 'pixi.js';
-import { useFaceTracking, useMicVolume, TiltSteering, SFX, unlockAudio } from '@motion-games/engine';
+import { useFaceTracking, useMicVolume, TiltSteering, SFX, unlockAudio, getLocale, common } from '@motion-games/engine';
 import { StartScreen } from './components/StartScreen';
 import { CountdownOverlay } from './components/CountdownOverlay';
 import { HUD } from './components/HUD';
@@ -456,10 +456,10 @@ export function App() {
               if (!cancelled) setCameraReady(true);
             }
           } catch {
-            if (!cancelled) setCameraError('需要摄像头才能游戏，请授权后刷新页面。');
+            if (!cancelled) setCameraError(common.cameraError[getLocale()]);
           }
         } else if (!cancelled) {
-          setCameraError('需要摄像头才能游戏，请授权后刷新页面。');
+          setCameraError(common.cameraError[getLocale()]);
         }
       }
     }

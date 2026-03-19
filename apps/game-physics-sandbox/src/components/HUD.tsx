@@ -1,6 +1,9 @@
+import { useT } from '@motion-games/engine';
 import { useGameStore } from '../store/useGameStore';
+import texts from '../i18n';
 
 export function HUD() {
+  const { t } = useT(texts);
   const score = useGameStore((s) => s.score);
   const timeLeft = useGameStore((s) => s.timeLeft);
   const towerLevel = useGameStore((s) => s.towerLevel);
@@ -38,7 +41,7 @@ export function HUD() {
         background: 'rgba(0,0,0,0.4)', borderRadius: 16, padding: '6px 16px',
         fontSize: 14, fontWeight: 600,
       }}>
-        🧱 塔 Lv.{towerLevel} | 倒 {blocksToppled}
+        🧱 {t('towerLv')}{towerLevel} | {t('toppled')} {blocksToppled}
       </div>
       <style>{`
         @keyframes pulse {

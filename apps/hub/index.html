@@ -9,7 +9,7 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/icon.svg" />
-  <title>Motion Games - 体感小游戏</title>
+  <title>Motion Games</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -85,55 +85,93 @@
       border-radius: 10px;
       margin-top: 8px;
     }
-    .coming-soon .game-thumb {
-      background: linear-gradient(180deg, #333 0%, #555 100%);
-      opacity: 0.5;
+    #lang-toggle {
+      position: fixed; top: calc(16px + env(safe-area-inset-top, 0px)); right: calc(16px + env(safe-area-inset-right, 0px));
+      z-index: 100;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      color: #fff; border-radius: 20px; padding: 6px 16px;
+      font-size: 14px; cursor: pointer;
     }
-    .coming-soon { opacity: 0.5; pointer-events: none; }
   </style>
 </head>
 <body>
+  <button id="lang-toggle" onclick="toggleLang()">EN</button>
+
   <h1>🎮 Motion Games</h1>
-  <p class="subtitle">用摄像头和手势玩游戏</p>
+  <p class="subtitle" data-i18n="subtitle">用摄像头和手势玩游戏</p>
 
   <div class="games">
     <a class="game-card" href="/balloon-popper/">
       <div class="game-thumb">🎈</div>
       <div class="game-info">
-        <h2>气球捏捏乐</h2>
-        <p>伸出手，捏合手指戳破飞上来的气球！小心炸弹！</p>
-        <span class="badge">可以玩</span>
-      </div>
-    </a>
-
-    <a class="game-card" href="/physics-sandbox/">
-      <div class="game-thumb" style="background: linear-gradient(180deg, #5C6BC0 0%, #3949AB 100%);">🧱</div>
-      <div class="game-info">
-        <h2>魔法物理沙盒</h2>
-        <p>抓取物体抛向积木塔，推倒越多得分越高！</p>
-        <span class="badge">可以玩</span>
+        <h2 data-i18n="balloon_title">气球捏捏乐</h2>
+        <p data-i18n="balloon_desc">伸出手，捏合手指戳破飞上来的气球！小心炸弹！</p>
+        <span class="badge" data-i18n="badge">可以玩</span>
       </div>
     </a>
 
     <a class="game-card" href="/stick-hero/">
       <div class="game-thumb" style="background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);">🌉</div>
       <div class="game-info">
-        <h2>棍子英雄</h2>
-        <p>张嘴让木棍生长，闭嘴让它倒下搭桥！太短或太长都会掉下去！</p>
-        <span class="badge">可以玩</span>
+        <h2 data-i18n="stick_title">棍子英雄</h2>
+        <p data-i18n="stick_desc">张嘴让木棍生长，闭嘴让它倒下搭桥！太短或太长都会掉下去！</p>
+        <span class="badge" data-i18n="badge">可以玩</span>
       </div>
     </a>
 
     <a class="game-card" href="/roaring-motorbike/">
       <div class="game-thumb" style="background: linear-gradient(180deg, #FF6F00 0%, #E65100 100%);">🏍️</div>
       <div class="game-info">
-        <h2>咆哮摩托</h2>
-        <p>歪头转向、大声吼叫加速，在公路上狂飙！</p>
-        <span class="badge">可以玩</span>
+        <h2 data-i18n="moto_title">咆哮摩托</h2>
+        <p data-i18n="moto_desc">歪头转向、大声吼叫加速，在公路上狂飙！</p>
+        <span class="badge" data-i18n="badge">可以玩</span>
+      </div>
+    </a>
+
+    <a class="game-card" href="/physics-sandbox/">
+      <div class="game-thumb" style="background: linear-gradient(180deg, #5C6BC0 0%, #3949AB 100%);">🧱</div>
+      <div class="game-info">
+        <h2 data-i18n="sandbox_title">魔法物理沙盒</h2>
+        <p data-i18n="sandbox_desc">抓取物体抛向积木塔，推倒越多得分越高！</p>
+        <span class="badge" data-i18n="badge">可以玩</span>
       </div>
     </a>
   </div>
 
   <p style="margin-top: auto; padding-top: 48px; font-size: 13px; opacity: 0.35;">Made with ❤️ by yc & claude</p>
+
+  <script>
+  (function() {
+    var KEY = 'motion-games-lang';
+    var lang = localStorage.getItem(KEY);
+    if (lang !== 'zh' && lang !== 'en') {
+      lang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+    }
+    var T = {
+      subtitle:      { zh: '用摄像头和手势玩游戏', en: 'Play games with camera & gestures' },
+      badge:         { zh: '可以玩', en: 'Playable' },
+      balloon_title: { zh: '气球捏捏乐', en: 'Balloon Popper' },
+      balloon_desc:  { zh: '伸出手，捏合手指戳破飞上来的气球！小心炸弹！', en: 'Pinch your fingers to pop rising balloons! Watch out for bombs!' },
+      stick_title:   { zh: '棍子英雄', en: 'Stick Hero' },
+      stick_desc:    { zh: '张嘴让木棍生长，闭嘴让它倒下搭桥！太短或太长都会掉下去！', en: 'Open mouth to grow the stick, close to let it fall as a bridge!' },
+      moto_title:    { zh: '咆哮摩托', en: 'Roaring Motorbike' },
+      moto_desc:     { zh: '歪头转向、大声吼叫加速，在公路上狂飙！', en: 'Tilt head to steer, shout to accelerate!' },
+      sandbox_title: { zh: '魔法物理沙盒', en: 'Physics Sandbox' },
+      sandbox_desc:  { zh: '抓取物体抛向积木塔，推倒越多得分越高！', en: 'Grab and throw objects at block towers! More toppled = higher score!' },
+    };
+    function apply(l) {
+      lang = l;
+      localStorage.setItem(KEY, l);
+      document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (T[key]) el.textContent = T[key][l];
+      });
+      document.getElementById('lang-toggle').textContent = l === 'zh' ? 'EN' : '中文';
+    }
+    apply(lang);
+    window.toggleLang = function() { apply(lang === 'zh' ? 'en' : 'zh'); };
+  })();
+  </script>
 </body>
 </html>

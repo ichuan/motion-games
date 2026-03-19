@@ -22,6 +22,10 @@ export { MicVolume } from './audio/mic-volume';
 export type { CursorState } from './cursor/types';
 export { CursorOverlay } from './components/CursorOverlay';
 
+// i18n
+export { useT, switchLocale, getLocale, setLocale, common } from './i18n';
+export type { Locale, CommonKey } from './i18n';
+
 // Hooks
 export { useCamera } from './hooks/useCamera';
 export { useHandTracking } from './hooks/useHandTracking';

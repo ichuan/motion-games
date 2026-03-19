@@ -1,4 +1,6 @@
 import { useCallback, useRef } from 'react';
+import { useT } from '@motion-games/engine';
+import texts from '../i18n';
 
 interface Props {
   loading: boolean;
@@ -7,6 +9,7 @@ interface Props {
 }
 
 export function StartScreen({ loading, error, onStart }: Props) {
+  const { t, locale, switchLocale } = useT(texts);
   const didFullscreen = useRef(false);
 
   const handleTap = useCallback(() => {
@@ -26,6 +29,17 @@ export function StartScreen({ loading, error, onStart }: Props) {
         color: '#fff',
       }}
     >
+      <button
+        onClick={(e) => { e.stopPropagation(); switchLocale(locale === 'zh' ? 'en' : 'zh'); }}
+        style={{
+          position: 'fixed', top: 'calc(16px + env(safe-area-inset-top, 0px))', right: 'calc(16px + env(safe-area-inset-right, 0px))',
+          zIndex: 201, background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)',
+          color: '#fff', borderRadius: 20, padding: '6px 16px', fontSize: 14, cursor: 'pointer',
+        }}
+      >
+        {locale === 'zh' ? 'EN' : '中文'}
+      </button>
+
       {/* Left: title + instructions */}
       <div style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -34,8 +48,8 @@ export function StartScreen({ loading, error, onStart }: Props) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 48 }}>🌉</span>
           <div>
-            <h1 style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>棍子英雄</h1>
-            <p style={{ fontSize: 12, opacity: 0.5, margin: 0 }}>Stick Hero</p>
+            <h1 style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>{t('title')}</h1>
+            <p style={{ fontSize: 12, opacity: 0.5, margin: 0 }}>{t('subtitle')}</p>
           </div>
         </div>
 
@@ -44,13 +58,13 @@ export function StartScreen({ loading, error, onStart }: Props) {
           background: 'rgba(255,255,255,0.08)', textAlign: 'center',
           lineHeight: 1.6, fontSize: 14,
         }}>
-          <div>😮 张嘴 → 木棍生长</div>
-          <div>😶 闭嘴 → 木棍倒下搭桥</div>
+          <div>{t('inst1')}</div>
+          <div>{t('inst2')}</div>
           <div style={{ marginTop: 4, fontSize: 12, opacity: 0.5 }}>
-            也可以按住屏幕代替张嘴
+            {t('touchHint')}
           </div>
           <div style={{ marginTop: 4, fontSize: 12, opacity: 0.5 }}>
-            📱 横屏游玩效果更佳
+            {t('landscape')}
           </div>
         </div>
       </div>
@@ -78,7 +92,7 @@ export function StartScreen({ loading, error, onStart }: Props) {
             color: '#fff', transition: 'transform 0.1s',
           }}
         >
-          {loading ? '加载中...' : '开始游戏'}
+          {loading ? t('loading') : t('startGame')}
         </button>
 
         <a
@@ -88,7 +102,7 @@ export function StartScreen({ loading, error, onStart }: Props) {
             textDecoration: 'none',
           }}
         >
-          返回大厅
+          {t('backToHub')}
         </a>
       </div>
     </div>

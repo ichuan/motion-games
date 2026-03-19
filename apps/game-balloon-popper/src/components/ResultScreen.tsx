@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
-import { SFX } from '@motion-games/engine';
+import { SFX, useT } from '@motion-games/engine';
 import { useGameStore } from '../store/useGameStore';
+import texts from '../i18n';
 
 interface Props {
   onRestart: () => void;
 }
 
 export function ResultScreen({ onRestart }: Props) {
+  const { t } = useT(texts);
   const score = useGameStore((s) => s.score);
   const popped = useGameStore((s) => s.popped);
   const missed = useGameStore((s) => s.missed);
@@ -27,20 +29,20 @@ export function ResultScreen({ onRestart }: Props) {
     }}>
       <div style={{ fontSize: 64, marginBottom: 8 }}>{emoji}</div>
       <h2 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 24px' }}>
-        游戏结束！
+        {t('gameOver')}
       </h2>
       <div style={{
         background: 'rgba(255,255,255,0.1)', borderRadius: 16,
         padding: '20px 40px', display: 'grid', gap: 12,
         gridTemplateColumns: '1fr 1fr', fontSize: 18,
       }}>
-        <div style={{ opacity: 0.7 }}>得分</div>
+        <div style={{ opacity: 0.7 }}>{t('score')}</div>
         <div style={{ fontWeight: 700, textAlign: 'right' }}>{score}</div>
-        <div style={{ opacity: 0.7 }}>戳破</div>
-        <div style={{ fontWeight: 700, textAlign: 'right' }}>{popped}个</div>
-        <div style={{ opacity: 0.7 }}>溜走</div>
-        <div style={{ fontWeight: 700, textAlign: 'right' }}>{missed}个</div>
-        <div style={{ opacity: 0.7 }}>最高连击</div>
+        <div style={{ opacity: 0.7 }}>{t('popped')}</div>
+        <div style={{ fontWeight: 700, textAlign: 'right' }}>{popped}{t('unit')}</div>
+        <div style={{ opacity: 0.7 }}>{t('missed')}</div>
+        <div style={{ fontWeight: 700, textAlign: 'right' }}>{missed}{t('unit')}</div>
+        <div style={{ opacity: 0.7 }}>{t('bestCombo')}</div>
         <div style={{ fontWeight: 700, textAlign: 'right' }}>x{bestCombo}</div>
       </div>
       <button
@@ -52,7 +54,7 @@ export function ResultScreen({ onRestart }: Props) {
           boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
         }}
       >
-        再来一局
+        {t('playAgain')}
       </button>
       <a
         href="/"
@@ -61,7 +63,7 @@ export function ResultScreen({ onRestart }: Props) {
           fontSize: 16, textDecoration: 'none',
         }}
       >
-        返回大厅
+        {t('backToHub')}
       </a>
     </div>
   );

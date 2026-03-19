@@ -1,6 +1,9 @@
+import { useT } from '@motion-games/engine';
 import { useGameStore } from '../store/useGameStore';
+import texts from '../i18n';
 
 export function HUD() {
+  const { t } = useT(texts);
   const score = useGameStore((s) => s.score);
   const bestScore = useGameStore((s) => s.bestScore);
 
@@ -22,7 +25,7 @@ export function HUD() {
           fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.5)',
           textShadow: '0 1px 4px rgba(0,0,0,0.5)',
         }}>
-          BEST: {bestScore}
+          {t('bestScore')}: {bestScore}
         </div>
       )}
     </div>

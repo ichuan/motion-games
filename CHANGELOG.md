@@ -1,6 +1,13 @@
 # Project Changelog
 
 ## [2026-03-19]
+- [x] 全站中英双语支持
+  - motion-engine 新增 i18n 模块（useT hook + getLocale/setLocale）
+  - Hub 右上角语言切换按钮，vanilla JS data-i18n 方案
+  - 4 个游戏 StartScreen/ResultScreen/HUD/PortraitLock 全部 i18n
+  - 语言偏好通过 localStorage 在 Hub 和游戏间同步
+- [x] PWA standalone 支持 + iOS safe-area-inset 适配
+- [x] 所有游戏 StartScreen 统一添加返回大厅链接
 - [x] 棍子英雄 (Stick Hero) 完成 (games.981234.xyz/stick-hero/)
   - 嘴巴张合控制：张嘴→木棍生长，闭嘴→木棍倒下搭桥
   - MediaPipe Face Mesh 唇部距离检测（landmarks 13/14），迟滞阈值防抖

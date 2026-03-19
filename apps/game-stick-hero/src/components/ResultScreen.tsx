@@ -1,12 +1,14 @@
-import { SFX } from '@motion-games/engine';
+import { SFX, useT } from '@motion-games/engine';
 import { useEffect } from 'react';
 import { useGameStore } from '../store/useGameStore';
+import texts from '../i18n';
 
 interface Props {
   onRestart: () => void;
 }
 
 export function ResultScreen({ onRestart }: Props) {
+  const { t } = useT(texts);
   const score = useGameStore((s) => s.score);
   const bestScore = useGameStore((s) => s.bestScore);
   const perfectCount = useGameStore((s) => s.perfectCount);
@@ -24,19 +26,19 @@ export function ResultScreen({ onRestart }: Props) {
       padding: 'env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px)',
     }}>
       <div style={{ fontSize: 64 }}>{emoji}</div>
-      <h2 style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>游戏结束</h2>
+      <h2 style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>{t('gameOver')}</h2>
 
       <div style={{
         display: 'grid', gridTemplateColumns: '1fr 1fr',
         gap: '12px 32px', marginTop: 16, fontSize: 16,
       }}>
-        <div style={{ opacity: 0.6, textAlign: 'right' }}>得分</div>
+        <div style={{ opacity: 0.6, textAlign: 'right' }}>{t('score')}</div>
         <div style={{ fontWeight: 700, fontSize: 20 }}>{score}</div>
 
-        <div style={{ opacity: 0.6, textAlign: 'right' }}>最高分</div>
+        <div style={{ opacity: 0.6, textAlign: 'right' }}>{t('bestScore')}</div>
         <div style={{ fontWeight: 700, fontSize: 20 }}>{Math.max(score, bestScore)}</div>
 
-        <div style={{ opacity: 0.6, textAlign: 'right' }}>完美次数</div>
+        <div style={{ opacity: 0.6, textAlign: 'right' }}>{t('perfectCnt')}</div>
         <div style={{ fontWeight: 700, fontSize: 20 }}>{perfectCount}</div>
       </div>
 
@@ -48,7 +50,7 @@ export function ResultScreen({ onRestart }: Props) {
           background: '#e74c3c', color: '#fff',
         }}
       >
-        再来一局
+        {t('playAgain')}
       </button>
 
       <a
@@ -58,7 +60,7 @@ export function ResultScreen({ onRestart }: Props) {
           textDecoration: 'none',
         }}
       >
-        返回大厅
+        {t('backToHub')}
       </a>
     </div>
   );

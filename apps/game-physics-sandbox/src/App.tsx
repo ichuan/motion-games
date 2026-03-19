@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { Container, Graphics } from 'pixi.js';
-import { useCursor, CursorOverlay, SFX, unlockAudio, type CursorState } from '@motion-games/engine';
+import { useCursor, CursorOverlay, SFX, unlockAudio, useT, getLocale, common, type CursorState } from '@motion-games/engine';
+import sandboxTexts from './i18n';
 import { StartScreen } from './components/StartScreen';
 import { CountdownOverlay } from './components/CountdownOverlay';
 import { HUD } from './components/HUD';
@@ -380,7 +381,7 @@ function GameScene({
     if (isTowerCleared(towerBlocksRef.current) && towerClearTimerRef.current <= 0) {
       addScore(FULL_CLEAR_BONUS);
       clearTower();
-      floatingTexts.add(`全清 +${FULL_CLEAR_BONUS}!`, screenW * 0.65, screenH * 0.4, '#FF7043');
+      floatingTexts.add(`${sandboxTexts.fullClear[getLocale()]} +${FULL_CLEAR_BONUS}!`, screenW * 0.65, screenH * 0.4, '#FF7043');
       SFX.combo();
       screenShake.trigger(10, 0.2);
       towerClearTimerRef.current = 1.5; // delay before new tower
@@ -469,6 +470,7 @@ function FloatingTextOverlay({ texts }: { texts: FloatingTextSystem }) {
 
 // ── Portrait lock overlay ──
 function PortraitLock() {
+  const { t } = useT(sandboxTexts);
   const [isPortrait, setIsPortrait] = useState(
     typeof window !== 'undefined' && window.innerHeight > window.innerWidth,
   );
@@ -494,9 +496,9 @@ function PortraitLock() {
       color: '#fff', textAlign: 'center', fontFamily: "'Segoe UI', sans-serif",
     }}>
       <div style={{ fontSize: 64, marginBottom: 16, animation: 'rotate-hint 1.5s ease-in-out infinite' }}>📱</div>
-      <h2 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 12px' }}>请横屏使用</h2>
+      <h2 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 12px' }}>{t('landscapePlz')}</h2>
       <p style={{ fontSize: 16, opacity: 0.8, maxWidth: 280, lineHeight: 1.5 }}>
-        将设备旋转为横屏模式以获得最佳游戏体验
+        {t('landscapeDesc')}
       </p>
       <style>{`
         @keyframes rotate-hint {
@@ -548,7 +550,7 @@ export function App() {
           if (!cancelled) setCameraReady(true);
         }
       } catch {
-        if (!cancelled) setCameraError('需要摄像头才能游戏，请授权后刷新页面。');
+        if (!cancelled) setCameraError(common.cameraError[getLocale()]);
       }
     }
     init();

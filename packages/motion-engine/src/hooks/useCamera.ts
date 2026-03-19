@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createCamera } from '../tracking/camera';
+import { getLocale } from '../i18n/lang';
+import { common } from '../i18n/locales';
 
 export function useCamera() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -24,7 +26,7 @@ export function useCamera() {
           if (!cancelled) setIsReady(true);
         }
       } catch (e) {
-        if (!cancelled) setError('需要摄像头才能游戏，请授权后刷新页面。');
+        if (!cancelled) setError(common.cameraError[getLocale()]);
       }
     }
 

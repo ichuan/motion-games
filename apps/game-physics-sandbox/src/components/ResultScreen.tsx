@@ -1,10 +1,13 @@
+import { useT } from '@motion-games/engine';
 import { useGameStore } from '../store/useGameStore';
+import texts from '../i18n';
 
 interface Props {
   onRestart: () => void;
 }
 
 export function ResultScreen({ onRestart }: Props) {
+  const { t } = useT(texts);
   const score = useGameStore((s) => s.score);
   const blocksToppled = useGameStore((s) => s.blocksToppled);
   const towersCleared = useGameStore((s) => s.towersCleared);
@@ -20,16 +23,16 @@ export function ResultScreen({ onRestart }: Props) {
     }}>
       <div style={{ fontSize: 48, marginBottom: 8 }}>🎉</div>
       <h2 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 24px' }}>
-        时间到！
+        {t('timeUp')}
       </h2>
 
       <div style={{
         display: 'flex', gap: 24, marginBottom: 32,
         flexWrap: 'wrap', justifyContent: 'center',
       }}>
-        <StatBox label="总分" value={`${score}`} icon="🏆" />
-        <StatBox label="推倒积木" value={`${blocksToppled}`} icon="🧱" />
-        <StatBox label="通关塔数" value={`${towersCleared}`} icon="🏰" />
+        <StatBox label={t('totalScore')} value={`${score}`} icon="🏆" />
+        <StatBox label={t('blocksLabel')} value={`${blocksToppled}`} icon="🧱" />
+        <StatBox label={t('towersLabel')} value={`${towersCleared}`} icon="🏰" />
       </div>
 
       <button
@@ -41,7 +44,7 @@ export function ResultScreen({ onRestart }: Props) {
           boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
         }}
       >
-        再来一局
+        {t('playAgain')}
       </button>
       <a
         href="/"
@@ -50,7 +53,7 @@ export function ResultScreen({ onRestart }: Props) {
           textDecoration: 'none', marginTop: 16,
         }}
       >
-        返回大厅
+        {t('backToHub')}
       </a>
     </div>
   );

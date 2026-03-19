@@ -1,3 +1,6 @@
+import { useT } from '@motion-games/engine';
+import texts from '../i18n';
+
 interface Props {
   loading: boolean;
   error: string | null;
@@ -5,6 +8,8 @@ interface Props {
 }
 
 export function StartScreen({ loading, error, onStart }: Props) {
+  const { t, locale, switchLocale } = useT(texts);
+
   return (
     <div style={{
       position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column',
@@ -13,19 +18,30 @@ export function StartScreen({ loading, error, onStart }: Props) {
       zIndex: 200, color: '#fff', textAlign: 'center',
       fontFamily: "'Segoe UI', sans-serif",
     }}>
+      <button
+        onClick={() => switchLocale(locale === 'zh' ? 'en' : 'zh')}
+        style={{
+          position: 'fixed', top: 'calc(16px + env(safe-area-inset-top, 0px))', right: 'calc(16px + env(safe-area-inset-right, 0px))',
+          zIndex: 201, background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)',
+          color: '#fff', borderRadius: 20, padding: '6px 16px', fontSize: 14, cursor: 'pointer',
+        }}
+      >
+        {locale === 'zh' ? 'EN' : '中文'}
+      </button>
+
       <div style={{ fontSize: 64, marginBottom: 8 }}>🏍️</div>
       <h1 style={{ fontSize: 36, fontWeight: 800, margin: '0 0 8px' }}>
-        咆哮摩托
+        {t('title')}
       </h1>
       <p style={{ fontSize: 16, opacity: 0.8, marginBottom: 16 }}>
-        Roaring Motorbike
+        {t('subtitle')}
       </p>
       <div style={{
         fontSize: 14, opacity: 0.9, marginBottom: 24, maxWidth: 280, lineHeight: 1.6,
         background: 'rgba(0,0,0,0.2)', borderRadius: 12, padding: '12px 16px',
       }}>
-        <div>🎤 对着手机发出声音 → 加速</div>
-        <div>📱 左右歪头 → 转向</div>
+        <div>{t('inst1')}</div>
+        <div>{t('inst2')}</div>
       </div>
       {error ? (
         <div style={{
@@ -49,12 +65,12 @@ export function StartScreen({ loading, error, onStart }: Props) {
           onPointerDown={(e) => { if (!loading) (e.target as HTMLElement).style.transform = 'scale(0.95)'; }}
           onPointerUp={(e) => { (e.target as HTMLElement).style.transform = ''; }}
         >
-          {loading ? '加载模型中...' : '开始游戏'}
+          {loading ? t('loadingModel') : t('startGame')}
         </button>
       )}
       {loading && (
         <p style={{ fontSize: 14, opacity: 0.6, marginTop: 16 }}>
-          首次加载可能需要几秒...
+          {t('firstLoad')}
         </p>
       )}
       <a
@@ -64,7 +80,7 @@ export function StartScreen({ loading, error, onStart }: Props) {
           textDecoration: 'none', marginTop: 16,
         }}
       >
-        返回大厅
+        {t('backToHub')}
       </a>
     </div>
   );
