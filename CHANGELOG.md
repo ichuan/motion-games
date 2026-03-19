@@ -1,6 +1,15 @@
 # Project Changelog
 
 ## [2026-03-19]
+- [x] 棍子英雄 (Stick Hero) 完成 (games.981234.xyz/stick-hero/)
+  - 嘴巴张合控制：张嘴→木棍生长，闭嘴→木棍倒下搭桥
+  - MediaPipe Face Mesh 唇部距离检测（landmarks 13/14），迟滞阈值防抖
+  - 可爱画风：渐变天空、飘动云朵、太阳光晕、巧克力砖柱、草地顶部、卡通角色
+  - 平滑摄像机过渡（lerp ease-out）
+  - 完美区域加分机制（金色闪光标记）
+  - 触摸按压降级（无摄像头时可触屏操作）
+  - 支持竖屏/横屏双模式
+- [x] motion-engine: `useFaceTracking` 扩展 `mouthOpenness` 检测
 - [x] 魔法物理沙盒 (Magic Physics Sandbox) 完成 (games.981234.xyz/physics-sandbox/)
   - Rapier2D WASM 物理引擎 (`@dimforge/rapier2d-compat`)
   - 手势捏合抓取 + 抛投机制（kinematic/dynamic 切换）

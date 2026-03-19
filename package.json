@@ -11,6 +11,9 @@
     "dev:sandbox": "pnpm --filter game-physics-sandbox dev",
     "build:sandbox": "pnpm --filter game-physics-sandbox build",
     "preview:sandbox": "pnpm --filter game-physics-sandbox preview",
+    "dev:stick": "pnpm --filter game-stick-hero dev",
+    "build:stick": "pnpm --filter game-stick-hero build",
+    "preview:stick": "pnpm --filter game-stick-hero preview",
     "deploy": "bash scripts/deploy.sh"
   },
   "pnpm": {

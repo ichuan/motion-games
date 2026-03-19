@@ -22,5 +22,6 @@ export interface TrackingResult {
 
 export interface FaceTrackingResult {
   tiltAngle: number | null;
+  mouthOpenness: number | null;
   isTracking: boolean;
 }

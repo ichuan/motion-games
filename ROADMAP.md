@@ -12,6 +12,7 @@
 
 ## 📔 Done
 > 最近完成（查看完整历史 → [CHANGELOG.md](CHANGELOG.md)）
+- [x] 棍子英雄 (Stick Hero)：嘴巴张合控制 + 面部检测扩展 - 2026-03-19
 - [x] 魔法物理沙盒 (Magic Physics Sandbox)：Rapier2D 物理 + 手势抛投 - 2026-03-19
 - [x] 游标系统抽象到 motion-engine（useCursor + CursorOverlay） - 2026-03-18
 - [x] 咆哮摩托 (Roaring Motorbike) MVP：面部追踪转向 + 麦克风加速 - 2026-03-18

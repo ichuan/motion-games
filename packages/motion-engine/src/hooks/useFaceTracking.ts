@@ -7,6 +7,10 @@ import type { FaceTrackingResult } from '../tracking/types';
 const RIGHT_EYE_OUTER = 33;
 const LEFT_EYE_OUTER = 263;
 
+// Lip landmark indices for mouth openness
+const UPPER_LIP = 13;
+const LOWER_LIP = 14;
+
 // Fixed canvas size — always landscape, same pattern as hand tracking
 const MODEL_W = 640;
 const MODEL_H = 480;
@@ -18,7 +22,7 @@ export function useFaceTracking(
   videoRef: React.RefObject<HTMLVideoElement | null>,
   enabled = true,
 ): FaceTrackingResult & { detectorReady: boolean; error: string | null } {
-  const [result, setResult] = useState<FaceTrackingResult>({ tiltAngle: null, isTracking: false });
+  const [result, setResult] = useState<FaceTrackingResult>({ tiltAngle: null, mouthOpenness: null, isTracking: false });
   const [detectorReady, setDetectorReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const detectorRef = useRef<FaceDetector | null>(null);
@@ -26,6 +30,7 @@ export function useFaceTracking(
   const busyRef = useRef(false);
   const rafRef = useRef(0);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const smoothedMouthRef = useRef(0);
 
   useEffect(() => {
     if (!enabled) return;
@@ -93,13 +98,13 @@ export function useFaceTracking(
         detector.estimateFaces(canvas).then((faces) => {
           busyRef.current = false;
           if (faces.length === 0) {
-            setResult({ tiltAngle: null, isTracking: false });
+            setResult({ tiltAngle: null, mouthOpenness: null, isTracking: false });
             return;
           }
 
           const kps = faces[0].keypoints;
           if (!kps || kps.length < 300) {
-            setResult({ tiltAngle: null, isTracking: false });
+            setResult({ tiltAngle: null, mouthOpenness: null, isTracking: false });
             return;
           }
 
@@ -124,7 +129,25 @@ export function useFaceTracking(
           // Negate to make: player tilts head left → negative → bike moves left.
           const tiltAngle = -Math.atan2(rightEye.y - leftEye.y, rightEye.x - leftEye.x);
 
-          setResult({ tiltAngle, isTracking: true });
+          // Mouth openness: distance between upper/lower lip, normalized by eye distance
+          let mouthOpenness: number | null = null;
+          const rawUpper = kps[UPPER_LIP];
+          const rawLower = kps[LOWER_LIP];
+          if (
+            Number.isFinite(rawUpper?.y) && Number.isFinite(rawLower?.y)
+          ) {
+            const eyeDist = Math.sqrt(
+              (rightEye.x - leftEye.x) ** 2 + (rightEye.y - leftEye.y) ** 2,
+            );
+            if (eyeDist > 1) {
+              const raw = Math.abs(rawLower.y - rawUpper.y) / eyeDist;
+              const alpha = 0.3;
+              smoothedMouthRef.current = alpha * raw + (1 - alpha) * smoothedMouthRef.current;
+              mouthOpenness = Math.min(1, Math.max(0, smoothedMouthRef.current));
+            }
+          }
+
+          setResult({ tiltAngle, mouthOpenness, isTracking: true });
         }).catch(() => {
           busyRef.current = false;
         });
