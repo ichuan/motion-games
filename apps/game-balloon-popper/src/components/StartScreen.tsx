@@ -46,7 +46,8 @@ export function StartScreen({ loading, error, onStart }: Props) {
       {error ? (
         <div style={{
           background: 'rgba(255,0,0,0.2)', borderRadius: 12,
-          padding: '12px 24px', maxWidth: 300,
+          padding: '12px 24px', maxWidth: '85vw',
+          fontSize: 13, wordBreak: 'break-all', userSelect: 'text',
         }}>
           {error}
         </div>
