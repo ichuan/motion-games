@@ -17,6 +17,9 @@
     "dev:magic": "pnpm --filter game-magic-hand dev",
     "build:magic": "pnpm --filter game-magic-hand build",
     "preview:magic": "pnpm --filter game-magic-hand preview",
+    "dev:water": "pnpm --filter game-water-jutsu dev",
+    "build:water": "pnpm --filter game-water-jutsu build",
+    "preview:water": "pnpm --filter game-water-jutsu preview",
     "deploy": "bash scripts/deploy.sh"
   },
   "pnpm": {

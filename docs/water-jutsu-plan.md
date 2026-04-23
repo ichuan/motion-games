@@ -1,7 +1,7 @@
 # 水遁·击标 (Water Jutsu Striker) — 技术调研与实施计划
 
-**编制日期**：2026-04-23  
-**状态**：实施中  
+**编制日期**：2026-04-23
+**状态**：实施中
 **灵感来源**：[@DLKFZWilliam2 Twitter 演示](https://x.com/DLKFZWilliam2/status/2046804588351902176) — Three.js + 流体 shader 实现水遁忍术效果
 
 ---
@@ -214,5 +214,5 @@ const TIERS = {
 
 ## 七、版权声明
 
-本项目流体 shader 移植自 **PavelDoGreat/WebGL-Fluid-Simulation** (MIT License)。  
+本项目流体 shader 移植自 **PavelDoGreat/WebGL-Fluid-Simulation** (MIT License)。
 原版权声明详见 `packages/motion-engine/src/fluid/LICENSE-NOTICE.md`。

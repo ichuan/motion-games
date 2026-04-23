@@ -16,6 +16,9 @@ pnpm build:stick
 echo "Building magic-hand..."
 pnpm build:magic
 
+echo "Building water-jutsu..."
+pnpm build:water
+
 echo "Deploying to games.981234.xyz..."
 # Hub (static HTML + PWA assets) → root
 rsync -avz apps/hub/index.html apps/hub/manifest.json apps/hub/icon.svg dev:/srv/games.981234.xyz/
@@ -30,5 +33,7 @@ rsync -avz --delete apps/game-physics-sandbox/dist/ dev:/srv/games.981234.xyz/ph
 rsync -avz --delete apps/game-stick-hero/dist/ dev:/srv/games.981234.xyz/stick-hero/
 # Magic hand → /magic-hand/
 rsync -avz --delete apps/game-magic-hand/dist/ dev:/srv/games.981234.xyz/magic-hand/
+# Water Jutsu → /water-jutsu/
+rsync -avz --delete apps/game-water-jutsu/dist/ dev:/srv/games.981234.xyz/water-jutsu/
 
 echo "Done! https://games.981234.xyz"

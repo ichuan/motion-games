@@ -2,7 +2,7 @@
 
 The fluid simulation shaders in this directory are derived from:
 
-**WebGL Fluid Simulation** by Pavel Dobryakov  
+**WebGL Fluid Simulation** by Pavel Dobryakov
 https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
 
 MIT License
