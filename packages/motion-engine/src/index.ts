@@ -34,3 +34,9 @@ export { useCursor } from './hooks/useCursor';
 export { useFaceTracking } from './hooks/useFaceTracking';
 export { useMicVolume } from './hooks/useMicVolume';
 export { useWakeLock } from './hooks/useWakeLock';
+export { useFluidSim } from './hooks/useFluidSim';
+export type { UseFluidSimReturn } from './hooks/useFluidSim';
+
+// Fluid simulation
+export { FluidSim } from './fluid/FluidSim';
+export type { FluidConfig, FluidSplat } from './fluid/FluidSim';
