@@ -1,12 +1,20 @@
-// App: 3-layer canvas architecture for Water Jutsu Striker.
+// App: layered canvas architecture for Water Jutsu Striker.
 //
-//   Layer 0: <video> — camera feed (CSS mirror + dark filter)
-//   Layer 1: <canvas> — Three.js GPU fluid simulation (mix-blend-mode: screen)
-//   Layer 2: PixiJS Application — fire targets, steam particles, floating text
+//   Layer 1: PixiJS Application (z=1)
+//             ├─ CameraBackground: video as PixiJS Sprite (mirrored + darkened)
+//             ├─ Fire targets, steam particles, floating text
+//             └─ background: #000000 (opaque, prevents white flash)
+//   Layer 2: <canvas> Three.js fluid simulation (z=2, mix-blend-mode: screen)
+//             └─ water glow blends with Layer 1 via CSS screen compositing
 //   Layer 3: React DOM — HUD, StartScreen, CountdownOverlay, ResultScreen
 //
+// Why this pattern instead of a CSS video background:
+//   @pixi/react v8 backgroundAlpha=0 doesn't reliably give a transparent canvas
+//   on mobile browsers. Rendering camera as a PixiJS Sprite (as in game-magic-hand)
+//   avoids the transparency issue entirely.
+//
 // Game loop runs in PixiJS useTick. Each tick:
-//   1. Advance fluid sim + render to fluid canvas
+//   1. Advance fluid sim + render to fluid canvas (Three.js, separate canvas)
 //   2. Map hand landmarks to fluid splats via HandToFluid
 //   3. Check collisions (palm vs targets)
 //   4. Update spawner + effects
@@ -14,7 +22,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Application, extend, useApplication, useTick } from '@pixi/react';
-import { Container, Graphics } from 'pixi.js';
+import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 import {
   useHandTracking, useFluidSim, useWakeLock,
   common, getLocale,
@@ -35,7 +43,47 @@ import {
   FLUID_RADIUS_OPEN,
 } from './game/constants';
 
-extend({ Container, Graphics });
+extend({ Container, Graphics, Sprite });
+
+// ── Camera background as PixiJS Sprite (mirrors magic-hand pattern) ──────────
+// Rendering camera inside PixiJS avoids the @pixi/react v8 backgroundAlpha
+// transparency issue that causes white screens on mobile.
+function CameraBackground({ videoEl }: { videoEl: HTMLVideoElement }) {
+  const { app } = useApplication();
+  const spriteRef = useRef<any>(null);
+  const texRef    = useRef<Texture | null>(null);
+
+  useEffect(() => {
+    const tex = Texture.from({ resource: videoEl, antialias: false });
+    texRef.current = tex;
+    if (spriteRef.current) spriteRef.current.texture = tex;
+    return () => { tex.destroy(); };
+  }, [videoEl]);
+
+  useTick(() => {
+    const sprite = spriteRef.current;
+    if (!sprite || !app || !texRef.current) return;
+    texRef.current.source.update();
+
+    const sw = app.screen.width;
+    const sh = app.screen.height;
+    const vw = videoEl.videoWidth  || 640;
+    const vh = videoEl.videoHeight || 480;
+    const scale = Math.max(sw / vw, sh / vh);
+
+    // Mirror horizontally (natural mirror for the user)
+    sprite.width   = vw * scale;
+    sprite.height  = vh * scale;
+    sprite.scale.x = -Math.abs(sprite.scale.x);
+    sprite.x       = (sw + vw * scale) / 2;
+    sprite.y       = (sh - vh * scale) / 2;
+
+    // Darken the camera feed so water effects pop
+    sprite.tint = 0x666666;
+  });
+
+  return <pixiSprite ref={spriteRef} texture={texRef.current ?? Texture.EMPTY} />;
+}
 
 // ── GPU tier detection ──────────────────────────────────────────────────────
 function detectGpuTier(): 'high' | 'mid' | 'low' {
@@ -62,15 +110,16 @@ const FLUID_CONFIG = {
 
 // ── PixiJS Game Scene ───────────────────────────────────────────────────────
 interface SceneProps {
-  fluidStep:   (dt: number) => void;
-  fluidRender: () => void;
-  fluidSplat:  (x: number, y: number, dx: number, dy: number, c: [number, number, number], r?: number) => void;
-  videoRef:    React.RefObject<HTMLVideoElement | null>;
-  screenW:     number;
-  screenH:     number;
+  fluidStep:    (dt: number) => void;
+  fluidRender:  () => void;
+  fluidSplat:   (x: number, y: number, dx: number, dy: number, c: [number, number, number], r?: number) => void;
+  videoRef:     React.RefObject<HTMLVideoElement | null>;
+  cameraReady:  boolean;
+  screenW:      number;
+  screenH:      number;
 }
 
-function GameScene({ fluidStep, fluidRender, fluidSplat, videoRef, screenW, screenH }: SceneProps) {
+function GameScene({ fluidStep, fluidRender, fluidSplat, videoRef, cameraReady, screenW, screenH }: SceneProps) {
   const { app } = useApplication();
 
   // --- game store ---
@@ -242,6 +291,10 @@ function GameScene({ fluidStep, fluidRender, fluidSplat, videoRef, screenW, scre
 
   return (
     <>
+      {/* Camera feed as PixiJS Sprite — avoids CSS transparency issues on mobile */}
+      {cameraReady && videoRef.current && (
+        <CameraBackground videoEl={videoRef.current} />
+      )}
       {/* Game objects layer */}
       <pixiContainer ref={spawnerContainerRef} />
       {/* Effects layer (steam, floating text) */}
@@ -330,41 +383,41 @@ export function App() {
 
   return (
     <div style={styles.root}>
-      {/* Layer 0: Camera feed */}
+      {/* Hidden video element — used only for TF.js hand tracking */}
       <video
         ref={videoRef}
+        autoPlay
         playsInline
         muted
-        style={styles.video}
+        style={styles.hiddenVideo}
       />
 
-      {/* Layer 1: Three.js fluid canvas (screen blend) */}
+      {/* Layer 1: PixiJS Application (camera sprite + game objects) */}
+      {/* background="#000000" avoids the @pixi/react v8 backgroundAlpha=0 white-screen bug */}
+      <div style={styles.pixiCanvas}>
+        <Application
+          background="#000000"
+          resizeTo={window}
+          antialias={false}
+        >
+          <GameScene
+            fluidStep={fluidStep}
+            fluidRender={fluidRender}
+            fluidSplat={fluidSplat}
+            videoRef={videoRef}
+            cameraReady={cameraReady}
+            screenW={screenSize.width}
+            screenH={screenSize.height}
+          />
+        </Application>
+      </div>
+
+      {/* Layer 2: Three.js fluid canvas (screen blend on top of PixiJS) */}
+      {/* Screen blend: black → transparent, bright water → glow over dark camera */}
       <canvas
         ref={fluidCanvasRef}
-        width={screenSize.width}
-        height={screenSize.height}
         style={styles.fluidCanvas}
       />
-
-      {/* Layer 2: PixiJS game canvas (transparent, game objects) */}
-      {cameraReady && (
-        <div style={styles.pixiCanvas}>
-          <Application
-            backgroundAlpha={0}
-            resizeTo={window}
-            antialias={false}
-          >
-            <GameScene
-              fluidStep={fluidStep}
-              fluidRender={fluidRender}
-              fluidSplat={fluidSplat}
-              videoRef={videoRef}
-              screenW={screenSize.width}
-              screenH={screenSize.height}
-            />
-          </Application>
-        </div>
-      )}
 
       {/* Layer 3: React HUD + overlays */}
       {cameraError && (
@@ -401,36 +454,51 @@ const styles: Record<string, React.CSSProperties> = {
     height:     '100dvh',
     overflow:   'hidden',
     background: '#000',
+    // isolation: isolate is required so that mix-blend-mode: screen on the
+    // fluid canvas blends against the PixiJS canvas (black + camera) within
+    // this container, not against the document body (default white).
+    // Without this, screen blend against the white body = white everywhere.
+    isolation:  'isolate',
   },
-  video: {
-    position:   'absolute',
-    inset:      0,
-    width:      '100%',
-    height:     '100%',
-    objectFit:  'cover',
-    // Mirror the camera so it acts as a natural mirror
-    transform:  'scaleX(-1)',
-    filter:     'brightness(0.55) saturate(0.75)',
-    zIndex:     0,
-  },
-  fluidCanvas: {
-    position:      'absolute',
-    inset:         0,
-    width:         '100%',
-    height:        '100%',
-    // Screen blend makes bright water glow on the dark camera feed
-    mixBlendMode:  'screen',
+  // Video is hidden — used only as a TF.js input source for hand tracking
+  hiddenVideo: {
+    position:      'fixed',
+    opacity:       0,
     pointerEvents: 'none',
-    zIndex:        1,
+    width:         1,
+    height:        1,
   },
+  // Layer 1: PixiJS canvas wrapper (camera sprite + game objects)
+  // background: #000 prevents white flash while PixiJS canvas initializes
   pixiCanvas: {
     position:   'absolute',
-    inset:      0,
-    zIndex:     2,
+    top:        0,
+    left:       0,
+    right:      0,
+    bottom:     0,
+    zIndex:     1,
+    background: '#000',
+  },
+  // Layer 2: fluid canvas with screen blend on top of PixiJS
+  // Screen blend: where Three.js clears to black → transparent, water → glow
+  fluidCanvas: {
+    position:      'absolute',
+    top:           0,
+    left:          0,
+    right:         0,
+    bottom:        0,
+    width:         '100%',
+    height:        '100%',
+    mixBlendMode:  'screen',
+    pointerEvents: 'none',
+    zIndex:        2,
   },
   errorMsg: {
     position:       'absolute',
-    inset:          0,
+    top:            0,
+    left:           0,
+    right:          0,
+    bottom:         0,
     display:        'flex',
     alignItems:     'center',
     justifyContent: 'center',
@@ -442,7 +510,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   loadingMsg: {
     position:       'absolute',
-    inset:          0,
+    top:            0,
+    left:           0,
+    right:          0,
+    bottom:         0,
     display:        'flex',
     alignItems:     'center',
     justifyContent: 'center',
