@@ -20,6 +20,9 @@
     "dev:water": "pnpm --filter game-water-jutsu dev",
     "build:water": "pnpm --filter game-water-jutsu build",
     "preview:water": "pnpm --filter game-water-jutsu preview",
+    "dev:painter": "pnpm --filter game-gesture-painter dev",
+    "build:painter": "pnpm --filter game-gesture-painter build",
+    "preview:painter": "pnpm --filter game-gesture-painter preview",
     "deploy": "bash scripts/deploy.sh"
   },
   "pnpm": {

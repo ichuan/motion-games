@@ -1,0 +1,289 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #050505;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #fff;
+  user-select: none;
+  touch-action: none;
+}
+
+.app-shell {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: #050505;
+}
+
+.camera-feed,
+.paint-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.camera-feed {
+  object-fit: cover;
+  transform: scaleX(-1);
+  filter: saturate(1.05) contrast(1.03);
+  background: #111;
+}
+
+.paint-canvas {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.status-panel {
+  position: fixed;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  left: calc(16px + env(safe-area-inset-left, 0px));
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: rgba(10, 10, 10, 0.48);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  font-size: 13px;
+  font-weight: 650;
+  pointer-events: none;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+.exit-button {
+  position: fixed;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  z-index: 22;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  background: rgba(10, 10, 10, 0.46);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 26px;
+  line-height: 30px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  text-align: center;
+  text-decoration: none;
+}
+
+.exit-button:active {
+  transform: scale(0.94);
+}
+
+.palette {
+  position: fixed;
+  inset: 0;
+  z-index: 18;
+  pointer-events: none;
+}
+
+.palette::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--palette-band-height, 88px);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.34));
+}
+
+.swatch {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.58);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.34);
+  transform: translate(-50%, -50%);
+}
+
+.swatch.selected {
+  transform: translate(-50%, -50%) scale(1.22);
+  border-color: #fff;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.18), 0 3px 18px rgba(0, 0, 0, 0.4);
+}
+
+.finger-cursor {
+  position: fixed;
+  z-index: 19;
+  left: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
+  border: 3px solid #ff2d55;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+  box-shadow: 0 0 18px currentColor;
+}
+
+.finger-cursor::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.gesture-openPalm {
+  width: 68px;
+  height: 68px;
+  margin-left: -34px;
+  margin-top: -34px;
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.gesture-twoFingers {
+  border-style: double;
+}
+
+.gesture-thumbDown {
+  border-color: #ff453a !important;
+}
+
+.start-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 50% 32%, rgba(255, 255, 255, 0.11), transparent 30%),
+    rgba(7, 7, 7, 0.84);
+  color: #fff;
+  text-align: center;
+  backdrop-filter: blur(16px);
+}
+
+.start-mark {
+  font-size: 58px;
+  margin-bottom: 8px;
+}
+
+.start-screen h1 {
+  margin: 0 0 8px;
+  font-size: 38px;
+  line-height: 1.1;
+  font-weight: 850;
+}
+
+.start-subtitle {
+  margin: 0 0 18px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 16px;
+}
+
+.start-instructions {
+  display: grid;
+  gap: 6px;
+  max-width: 340px;
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.start-button,
+.lang-button {
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.start-button {
+  min-width: 180px;
+  min-height: 52px;
+  padding: 13px 28px;
+  border-radius: 28px;
+  background: #fff;
+  color: #111;
+  font-size: 18px;
+  font-weight: 800;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.34);
+}
+
+.start-button:disabled {
+  cursor: wait;
+  background: rgba(255, 255, 255, 0.26);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.lang-button {
+  position: fixed;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  min-width: 56px;
+  min-height: 32px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 14px;
+}
+
+.load-note,
+.back-link {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.load-note {
+  margin: 16px 0 0;
+}
+
+.back-link {
+  margin-top: 16px;
+  text-decoration: none;
+}
+
+.error-box {
+  max-width: 360px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(255, 69, 58, 0.18);
+  color: #ffb4ad;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 560px) {
+  .status-panel {
+    font-size: 12px;
+    max-width: calc(100vw - 76px);
+  }
+
+  .start-screen h1 {
+    font-size: 32px;
+  }
+}

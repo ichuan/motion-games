@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/exitbutton.tsx","./src/i18n.ts","./src/main.tsx","./src/__tests__/exitbutton.test.tsx","./src/__tests__/gesture.test.ts","./src/__tests__/layout.test.ts","./src/gesture/gestureclassifier.ts","./src/gesture/types.ts","./src/paint/layout.ts"],"version":"5.9.3"}
