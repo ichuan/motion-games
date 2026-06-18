@@ -13,6 +13,7 @@
 | 🏍️ [咆哮摩托](https://games.981234.xyz/roaring-motorbike/) | 头部倾斜转向 + 麦克风音量加速 |
 | 🧱 [魔法物理沙盒](https://games.981234.xyz/physics-sandbox/) | 手势抛投 + Rapier2D 物理引擎 |
 | ✋ [魔法之手](https://games.981234.xyz/magic-hand/) | 手部追踪 AR 特效（法阵/粒子/拖尾 + 手势切换） |
+| 🎨 [手势画板](https://games.981234.xyz/gesture-painter/) | 手部追踪 — 食指空中绘画 + 手势选色/擦除 |
 
 ## 项目结构
 
@@ -25,6 +26,7 @@ motion-games/
 ├── apps/game-roaring-motorbike  # 咆哮摩托
 ├── apps/game-physics-sandbox    # 魔法物理沙盒
 ├── apps/game-magic-hand         # 魔法之手
+├── apps/game-gesture-painter    # 手势画板
 └── scripts/deploy.sh            # 构建 + rsync 部署
 ```
 
@@ -48,6 +50,7 @@ pnpm dev:stick      # 棍子英雄
 pnpm dev:motorbike  # 咆哮摩托
 pnpm dev:sandbox    # 魔法物理沙盒
 pnpm dev:magic      # 魔法之手
+pnpm dev:painter    # 手势画板
 ```
 
 需要 HTTPS 或 localhost 才能访问摄像头。
